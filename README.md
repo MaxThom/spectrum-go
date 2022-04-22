@@ -6,6 +6,7 @@ https://github.com/rpi-ws281x/rpi-ws281x-go
 
 ## File structure
 
+```
 /cmd/<app_name>: main applications for this project.
 /internal: source code that are private to this module.
 /pkg: source code that can be shared.
@@ -25,7 +26,7 @@ https://github.com/rpi-ws281x/rpi-ws281x-go
 /assets: Other assets to go along with your repository (images, logos, etc).
 /website: This is the place to put your project's website data if you are not using GitHub pages.
 /githooks: Git Hooks.
-
+```
 ## Docker
 
 ```sh
@@ -66,6 +67,7 @@ sudo ./swiss
 docker run --rm -v "$PWD":/usr/src/$APP -w /usr/src/$APP ws2811-builder:latest go build -o "$swiss-docker" -v
 
 ## Install docker
+```sh
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 sudo usermod -aG docker ${USER}
@@ -75,14 +77,20 @@ docker version
 docker info
 docker run hello-world
 docker image rm hello-world
+```
 
 ## Install docker-compose
+```sh
 sudo apt-get install libffi-dev libssl-dev
 sudo apt install python3-dev
 sudo apt-get install -y python3 python3-pip
 sudo pip3 install docker-compose
 ‍sudo systemctl enable docker
 docker-compose version
+```
 
 ## Install go
-wget https://dl.google.com/go/go1.14.4.linux-armv6l.tar.gz
+```sh
+chmod +x scripts/go_installer.sh
+./go_installer.sh
+```

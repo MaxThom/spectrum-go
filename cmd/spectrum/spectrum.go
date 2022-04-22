@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"strconv"
-	"time"
 
 	ws2811 "github.com/rpi-ws281x/rpi-ws281x-go"
 )
@@ -25,24 +24,19 @@ func checkError(err error) {
 }
 
 func main() {
-	fmt.Println("*****************************")
-	fmt.Println("* rpi_ws281x Hardware Check *")
-	fmt.Println("*****************************")
+	fmt.Println("----------------")
+	fmt.Println(" Hardware Check ")
+	fmt.Println("----------------")
 	hw := ws2811.HwDetect()
-	fmt.Printf("Hardware Type    : %d\n", hw.Type)
-	fmt.Printf("Hardware Version : 0x%08X\n", hw.Version)
-	fmt.Printf("Periph base      : 0x%08X\n", hw.PeriphBase)
-	fmt.Printf("Video core base  : 0x%08X\n", hw.VideocoreBase)
-	fmt.Printf("Description      : %v\n", hw.Desc)
+	fmt.Printf("  Hardware Type    : %d\n", hw.Type)
+	fmt.Printf("  Hardware Version : 0x%08X\n", hw.Version)
+	fmt.Printf("  Periph base      : 0x%08X\n", hw.PeriphBase)
+	fmt.Printf("  Video core base  : 0x%08X\n", hw.VideocoreBase)
+	fmt.Printf("  Description      : %v\n", hw.Desc)
 
-	fmt.Println("-------------")
-	fmt.Println(" Spectrum Go ")
-	fmt.Println("-------------")
-
-	args := os.Args[1:]
-	fmt.Print(" ")
-	fmt.Println(args)
-	fmt.Println("-------------")
+	fmt.Println("-----------")
+	fmt.Println(" Led Strip ")
+	fmt.Println("-----------")
 
 	opt := ws2811.DefaultOptions
 	opt.RenderWaitTime = renderWaitTime
@@ -52,10 +46,24 @@ func main() {
 	opt.Channels[0].Brightness = brightness
 	opt.Channels[0].LedCount = ledCounts
 	opt.Channels[0].StripeType = ws2811.SK6812StripRGBW
-	fmt.Println(opt)
+	fmt.Printf("  RenderWaitTime : %d\n", opt.RenderWaitTime)
+	fmt.Printf("  Frequency      : %v\n", opt.Frequency)
+	fmt.Printf("  DmaNum         : %v\n", opt.DmaNum)
+	fmt.Printf("  GpioPin        : %v\n", opt.Channels[0].GpioPin)
+	fmt.Printf("  Brightness     : %v\n", opt.Channels[0].Brightness)
+	fmt.Printf("  LedCount       : %v\n", opt.Channels[0].LedCount)
+	fmt.Printf("  StripeType     : %v\n", opt.Channels[0].StripeType)
 
-	opt.Channels[0].Brightness = brightness
-	opt.Channels[0].LedCount = ledCounts
+	fmt.Println("------")
+	fmt.Println(" Args ")
+	fmt.Println("------")
+
+	args := os.Args[1:]
+	fmt.Println(" ", args)
+
+	fmt.Println("----------")
+	fmt.Println(" Spectrum ")
+	fmt.Println("----------")
 
 	dev, err := ws2811.MakeWS2811(&opt)
 	checkError(err)
@@ -90,12 +98,12 @@ func rainbown(dev *ws2811.WS2811) {
 			for j := 0; j < len(dev.Leds(0)); j++ {
 				dev.Leds(0)[j] = wheel(((j * 256 / len(dev.Leds(0))) + i) % 256)
 			}
-			t1 := time.Now()
+			//t1 := time.Now()
 			checkError(dev.Render())
 			//dev.Wait()
-			t2 := time.Now()
-			diff := t2.Sub(t1)
-			fmt.Println(diff)
+			//t2 := time.Now()
+			//diff := t2.Sub(t1)
+			//fmt.Println(diff)
 		}
 	}
 
