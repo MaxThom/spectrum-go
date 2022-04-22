@@ -1,8 +1,10 @@
 # Spectrum
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/maxthom/spectrum-go)](https://goreportcard.com/report/github.com/maxthom/spectrum-go)
+
 https://github.com/rpi-ws281x/rpi-ws281x-go
 
-## File strcture
+## File structure
 
 /cmd/<app_name>: main applications for this project.
 /internal: source code that are private to this module.
