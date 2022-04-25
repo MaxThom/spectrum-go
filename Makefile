@@ -3,6 +3,9 @@
 run: build
 	sudo ./bin/spectrum rainbow
 
+wipe: build
+	sudo ./bin/spectrum wipe
+
 clear: build
 	sudo ./bin/spectrum clear
 
