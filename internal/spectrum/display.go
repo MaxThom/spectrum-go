@@ -1,17 +1,19 @@
 package display
 
 import (
+	"context"
 	"fmt"
 	"os"
-	"strconv"
+	"time"
 
 	"github.com/go-logr/logr"
-	//"github.com/go-logr/logr"
+	"github.com/maxthom/spectrum-go/pkg/led"
 )
 
 var (
-	log   logr.Logger
-	strip ledstripControl
+	log    logr.Logger
+	strip  led.LedstripControl
+	anim1d led.Animation_1d
 )
 
 const (
@@ -30,96 +32,81 @@ func checkError(err error) {
 	}
 }
 
-func Run(log logr.Logger) {
-	log = log.WithName("display")
+func Run(plog logr.Logger) {
+	log = plog.WithName("display")
 
-	options := ledstripOptions{
-		brightness:     brightness,
-		ledCount:       ledCounts,
-		gpioPin:        gpioPin,
-		renderWaitTime: renderWaitTime,
-		frequency:      frequency,
-		dmaNum:         dmaNum,
-		stripType:      stripType,
+	// Initialize LED Strip
+	options := led.LedstripOptions{
+		Brightness:     brightness,
+		LedCount:       ledCounts,
+		GpioPin:        gpioPin,
+		RenderWaitTime: renderWaitTime,
+		Frequency:      frequency,
+		DmaNum:         dmaNum,
+		StripType:      stripType,
 	}
 	log.V(0).Info("Initiating led strip 💡", "options", fmt.Sprintf("%+v", options))
-	strip = &ws2811Control{nil, options}
+	strip = &led.Ws2811Control{Strip: nil, Options: options}
 	strip.Init()
+
+	// Initialize animaters
+	log.V(0).Info("Initializing animater 🕺", "dimension", "1d")
+	anim1d = led.Animation_1d{Strip: strip}
+
+	// Start rendering continusouly
+	log.V(0).Info("Initializing renderer 🎢")
+	go RenderContinuously()
 
 	args := os.Args[1:]
 
-	log.V(0).Info("Lauching animation 🎈", "args", args)
+	// Start animations...
+	log.V(0).Info("Lauching animations 🎈", "args", args)
 	if len(args) > 0 {
 		if args[0] == "clear" {
 			log.V(0).Info("Clear 🧹")
-			clear_strip()
+			go anim1d.Clear_strip(led.NewStripSegment(0, 144))
 		} else if args[0] == "rainbow" {
 			log.V(0).Info("Rainbow 🌈")
-			clear_strip()
-			rainbown()
+			anim1d.Clear_strip(led.NewStripSegment(0, 144))
+			//done := make(chan struct{})
+			//done2 := make(chan struct{})
+			ctx, cancel := context.WithCancel(context.Background())
+			go anim1d.Wipe(ctx, led.NewStripSegment(0, 36), 30*time.Millisecond)
+			go anim1d.Rainbown(led.NewStripSegment(36, 72), 5*time.Millisecond)
+			go anim1d.Wipe(ctx, led.NewStripSegment(72, 108), 30*time.Millisecond)
+			go anim1d.Rainbown(led.NewStripSegment(108, 144), 5*time.Millisecond)
+
+			time.Sleep(5 * time.Second)
+			//done <- struct{}{}
+			//done2 <- struct{}{}
+			cancel()
+			log.V(0).Info("Done Display")
+			time.Sleep(3 * time.Second)
+			go anim1d.Wipe(ctx, led.NewStripSegment(0, 36), 30*time.Millisecond)
+			go anim1d.Wipe(ctx, led.NewStripSegment(72, 108), 30*time.Millisecond)
+
+			time.Sleep(5 * time.Second)
+			//done <- struct{}{}
+			//done2 <- struct{}{}
+			cancel()
+			log.V(0).Info("Done Display")
+
 		} else if args[0] == "wipe" {
 			log.V(0).Info("Wipe 🎢")
-			wipe()
+			//anim1d.Wipe(led.NewStripSegment(0, 144), 30*time.Millisecond)
 		}
 	} else {
-		clear_strip()
+		go anim1d.Clear_strip(led.NewStripSegment(0, 144))
 	}
 }
 
-func clear_strip() {
-	for i := 0; i < strip.Count(0); i++ {
-		strip.SetLed(0, i, 0x00000000)
-	}
-	checkError(strip.Render())
-}
-
-func wipe() {
+func RenderContinuously() {
 	for {
-		clear_strip()
-		for i := 0; i < strip.Count(0); i++ {
-			strip.SetLed(0, i, 0xff000000)
-			checkError(strip.Render())
-			strip.Sync()
-		}
+		//t1 := time.Now()
+		checkError(strip.Render())
+		checkError(strip.Sync())
+		//t2 := time.Now()
+		//diff := t2.Sub(t1)
+		//log.V(0).Info("Render time", "ms", diff)
 	}
-}
-
-func rainbown() {
-	for {
-		for i := 0; i < 256; i++ {
-			for j := 0; j < strip.Count(0); j++ {
-				strip.SetLed(0, j, wheel(((j*256/strip.Count(0))+i)%256))
-			}
-			//t1 := time.Now()
-			checkError(strip.Render())
-			//dev.Wait()
-			//t2 := time.Now()
-			//diff := t2.Sub(t1)
-			//fmt.Println(diff)
-		}
-	}
-
-}
-
-func wheel(pos int) uint32 {
-	var r, g, b int
-	if pos < 85 {
-		r = pos * 3
-		g = 255 - pos*3
-		b = 0
-	} else if pos < 170 {
-		pos -= 85
-		r = 255 - pos*3
-		g = 0
-		b = pos * 3
-	} else {
-		pos -= 170
-		r = 0
-		g = pos * 3
-		b = 255 - pos*3
-	}
-
-	value, err := strconv.ParseUint(fmt.Sprintf("%02x%02x%02x", r, g, b), 16, 32)
-	checkError(err)
-	return uint32(value)
 }

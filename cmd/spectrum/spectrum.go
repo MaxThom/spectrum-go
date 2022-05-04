@@ -13,7 +13,8 @@ import (
 )
 
 var (
-	log logr.Logger
+	log  logr.Logger
+	quit = make(chan struct{})
 )
 
 const ()
@@ -38,4 +39,10 @@ func main() {
 	log.V(0).Info("Args", "args", args)
 
 	display.Run(log)
+
+	// Then blocking (waiting for quit signal):
+	<-quit
+
+	// And in another goroutine if you want to quit:
+	// close(quit)
 }
