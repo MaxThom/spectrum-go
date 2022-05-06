@@ -10,6 +10,7 @@ import (
 
 	//"github.com/go-logr/logr"
 	display "github.com/maxthom/spectrum-go/internal/spectrum"
+	"github.com/maxthom/spectrum-go/pkg/utils"
 )
 
 var (
@@ -19,15 +20,9 @@ var (
 
 const ()
 
-func checkError(err error) {
-	if err != nil {
-		panic(err)
-	}
-}
-
 func main() {
 	zapLogger, err := zap.NewDevelopment()
-	checkError(err)
+	utils.CheckError(err)
 	defer zapLogger.Sync()
 	log = zapr.NewLogger(zapLogger).WithName("spectrum")
 

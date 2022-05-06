@@ -1,9 +1,11 @@
 package display
 
 import (
-	"context"
 	"fmt"
 	"os"
+	"reflect"
+	"runtime"
+	"strings"
 	"time"
 
 	"github.com/go-logr/logr"
@@ -49,6 +51,10 @@ func Run(plog logr.Logger) {
 	strip = &led.Ws2811Control{Strip: nil, Options: options}
 	strip.Init()
 
+	// Program args
+	args := os.Args[1:]
+	log.V(0).Info("Program args 🎈", "args", args)
+
 	// Initialize animaters
 	log.V(0).Info("Initializing animater 🕺", "dimension", "1d")
 	anim1d = led.Animation_1d{Strip: strip}
@@ -57,47 +63,83 @@ func Run(plog logr.Logger) {
 	log.V(0).Info("Initializing renderer 🎢")
 	go RenderContinuously()
 
-	args := os.Args[1:]
-
 	// Start animations...
-	log.V(0).Info("Lauching animations 🎈", "args", args)
+	animations := []led.AnimUnit{}
 	if len(args) > 0 {
 		if args[0] == "clear" {
 			log.V(0).Info("Clear 🧹")
-			go anim1d.Clear_strip(led.NewStripSegment(0, 144))
+			animations = append(animations, led.AnimUnit{
+				CancelToken: nil,
+				Segment:     led.NewStripSegment(0, 144),
+				Anim:        anim1d.Clear_strip,
+				Options:     map[string]any{},
+			})
 		} else if args[0] == "rainbow" {
-			log.V(0).Info("Rainbow 🌈")
-			anim1d.Clear_strip(led.NewStripSegment(0, 144))
-			//done := make(chan struct{})
-			//done2 := make(chan struct{})
-			ctx, cancel := context.WithCancel(context.Background())
-			go anim1d.Wipe(ctx, led.NewStripSegment(0, 36), 30*time.Millisecond)
-			go anim1d.Rainbown(led.NewStripSegment(36, 72), 5*time.Millisecond)
-			go anim1d.Wipe(ctx, led.NewStripSegment(72, 108), 30*time.Millisecond)
-			go anim1d.Rainbown(led.NewStripSegment(108, 144), 5*time.Millisecond)
-
-			time.Sleep(5 * time.Second)
-			//done <- struct{}{}
-			//done2 <- struct{}{}
-			cancel()
-			log.V(0).Info("Done Display")
-			time.Sleep(3 * time.Second)
-			go anim1d.Wipe(ctx, led.NewStripSegment(0, 36), 30*time.Millisecond)
-			go anim1d.Wipe(ctx, led.NewStripSegment(72, 108), 30*time.Millisecond)
-
-			time.Sleep(5 * time.Second)
-			//done <- struct{}{}
-			//done2 <- struct{}{}
-			cancel()
-			log.V(0).Info("Done Display")
+			animations = append(animations, led.AnimUnit{
+				CancelToken: make(chan struct{}),
+				Segment:     led.NewStripSegment(0, 36),
+				Anim:        anim1d.Wipe,
+				Options: map[string]any{
+					"wait": 30 * time.Millisecond,
+				},
+			})
+			animations = append(animations, led.AnimUnit{
+				CancelToken: make(chan struct{}),
+				Segment:     led.NewStripSegment(36, 72),
+				Anim:        anim1d.Rainbown,
+				Options: map[string]any{
+					"wait": 5 * time.Millisecond,
+				},
+			})
+			animations = append(animations, led.AnimUnit{
+				CancelToken: make(chan struct{}),
+				Segment:     led.NewStripSegment(72, 108),
+				Anim:        anim1d.Wipe,
+				Options: map[string]any{
+					"wait": 30 * time.Millisecond,
+				},
+			})
+			animations = append(animations, led.AnimUnit{
+				CancelToken: make(chan struct{}),
+				Segment:     led.NewStripSegment(108, 144),
+				Anim:        anim1d.Rainbown,
+				Options: map[string]any{
+					"wait": 5 * time.Millisecond,
+				},
+			})
 
 		} else if args[0] == "wipe" {
 			log.V(0).Info("Wipe 🎢")
-			//anim1d.Wipe(led.NewStripSegment(0, 144), 30*time.Millisecond)
+			animations = append(animations, led.AnimUnit{
+				CancelToken: make(chan struct{}),
+				Segment:     led.NewStripSegment(0, 144),
+				Anim:        anim1d.Wipe,
+				Options: map[string]any{
+					"wait": 10 * time.Millisecond,
+				},
+			})
 		}
 	} else {
-		go anim1d.Clear_strip(led.NewStripSegment(0, 144))
+		log.V(0).Info("Clear 🧹")
+		animations = append(animations, led.AnimUnit{
+			CancelToken: nil,
+			Segment:     led.NewStripSegment(0, 144),
+			Anim:        anim1d.Clear_strip,
+			Options:     map[string]any{},
+		})
 	}
+
+	for i, animUnit := range animations {
+		log.V(0).Info("Starting animation", "index", i, "name", GetFunctionName(animUnit.Anim))
+		animUnit.StartAnimation()
+	}
+	log.V(0).Info("All animation started 🙂.")
+	time.Sleep(5 * time.Second)
+	for i, animUnit := range animations {
+		log.V(0).Info("Stopping animation", "index", i, "name", GetFunctionName(animUnit.Anim))
+		animUnit.StopAnimation()
+	}
+	log.V(0).Info("All animation stopped 😐.")
 }
 
 func RenderContinuously() {
@@ -109,4 +151,9 @@ func RenderContinuously() {
 		//diff := t2.Sub(t1)
 		//log.V(0).Info("Render time", "ms", diff)
 	}
+}
+
+func GetFunctionName(temp interface{}) string {
+	strs := strings.Split((runtime.FuncForPC(reflect.ValueOf(temp).Pointer()).Name()), ".")
+	return strs[len(strs)-1]
 }

@@ -3,6 +3,7 @@ package led
 import (
 	"fmt"
 
+	"github.com/maxthom/spectrum-go/pkg/utils"
 	ws2811 "github.com/rpi-ws281x/rpi-ws281x-go"
 )
 
@@ -63,10 +64,10 @@ func (s *Ws2811Control) Init() {
 	}
 
 	strip, err := ws2811.MakeWS2811(&opt)
-	checkError(err)
+	utils.CheckError(err)
 	s.Strip = strip
 
-	checkError(s.Strip.Init())
+	utils.CheckError(s.Strip.Init())
 }
 
 func (s *Ws2811Control) Info() {

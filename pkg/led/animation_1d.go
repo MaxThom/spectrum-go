@@ -1,56 +1,54 @@
 package led
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"time"
+
+	"github.com/maxthom/spectrum-go/pkg/utils"
 )
 
 type Animation_1d struct {
 	Strip LedstripControl
 }
 
-func (s *Animation_1d) Clear_strip(segment StripSegment) {
+func (s *Animation_1d) Clear_strip(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
 	for i := segment.Start; i < segment.End; i++ {
 		s.Strip.SetLed(0, i, 0x00000000)
 	}
-	//checkError(strip.Render())
 }
 
-func (s *Animation_1d) Wipe(ctx context.Context, segment StripSegment, wait time.Duration) {
+func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
+	wait := utils.If_key_exist_else[time.Duration](options, "wait", 1*time.Millisecond)
 	for {
-		s.Clear_strip(segment)
+		s.Clear_strip(cancelToken, segment, options)
 		for i := segment.Start; i < segment.End; i++ {
 			s.Strip.SetLed(0, i, 0xff000000)
-			//checkError(strip.Render())
-			//strip.Sync()
 			time.Sleep(5*time.Millisecond + wait)
-		}
-		select {
-		case <-ctx.Done():
-			fmt.Println("DONE ANIM")
-			return
-		default:
+			select {
+			case <-cancelToken:
+				return
+			default:
+			}
 		}
 	}
 }
 
-func (s *Animation_1d) Rainbown(segment StripSegment, wait time.Duration) {
+func (s *Animation_1d) Rainbown(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
+	wait := utils.If_key_exist_else[time.Duration](options, "wait", 1*time.Millisecond)
 	for {
 		for i := 0; i < 256; i++ {
 			for j := segment.Start; j < segment.End; j++ {
 				s.Strip.SetLed(0, j, wheel(((j*256/segment.End)+i)%256))
 			}
-			//t1 := time.Now()
-			//checkError(strip.Render())
 			time.Sleep(1*time.Millisecond + wait)
-			//t2 := time.Now()
-			//diff := t2.Sub(t1)
-			//fmt.Println(diff)
+			select {
+			case <-cancelToken:
+				return
+			default:
+			}
 		}
 	}
-
 }
 
 func wheel(pos int) uint32 {
@@ -72,6 +70,6 @@ func wheel(pos int) uint32 {
 	}
 
 	value, err := strconv.ParseUint(fmt.Sprintf("%02x%02x%02x", r, g, b), 16, 32)
-	checkError(err)
+	utils.CheckError(err)
 	return uint32(value)
 }
