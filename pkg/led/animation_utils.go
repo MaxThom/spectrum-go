@@ -17,3 +17,12 @@ func NewPosition(start int, end int) *Position {
 		direction: dir,
 	}
 }
+
+func cancellationRequest(cancelToken chan struct{}) bool {
+	select {
+	case <-cancelToken:
+		return true
+	default:
+		return false
+	}
+}

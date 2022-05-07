@@ -28,10 +28,8 @@ func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, opt
 		for i := segment.Start; i < segment.End; i++ {
 			s.Strip.SetLed(0, i, color)
 			time.Sleep(5*time.Millisecond + wait)
-			select {
-			case <-cancelToken:
+			if cancellationRequest(cancelToken) {
 				return
-			default:
 			}
 		}
 	}
@@ -45,10 +43,8 @@ func (s *Animation_1d) Rainbown(cancelToken chan struct{}, segment StripSegment,
 				s.Strip.SetLed(0, j, wheel(((j*256/segment.End)+i)%256))
 			}
 			time.Sleep(1*time.Millisecond + wait)
-			select {
-			case <-cancelToken:
+			if cancellationRequest(cancelToken) {
 				return
-			default:
 			}
 		}
 	}
@@ -72,7 +68,6 @@ func (s *Animation_1d) Maze(cancelToken chan struct{}, segment StripSegment, opt
 	for {
 		// Set color according to number of dots on an index
 		for i, nb := range location {
-
 			switch nb {
 			case 0:
 				s.Strip.SetLed(0, i+segment.Start, 0x00000000)
@@ -104,7 +99,12 @@ func (s *Animation_1d) Maze(cancelToken chan struct{}, segment StripSegment, opt
 			}
 			location[dots[i].position] += 1
 		}
+
 		time.Sleep(5*time.Millisecond + wait)
+		if cancellationRequest(cancelToken) {
+			return
+		}
+
 	}
 }
 

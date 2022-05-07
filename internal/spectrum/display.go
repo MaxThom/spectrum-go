@@ -75,7 +75,7 @@ func Run(plog logr.Logger, args []string) {
 				Segment:     led.NewStripSegment(0, 36),
 				Anim:        anim1d.Maze,
 				Options: map[string]any{
-					"wait":          30 * time.Millisecond,
+					"wait":          50 * time.Millisecond,
 					"count":         3,
 					"turn_chance":   2,
 					"color":         uint32(0x00ff88ff),
