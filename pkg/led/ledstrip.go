@@ -24,7 +24,7 @@ type LedstripControl interface {
 type StripSegment struct {
 	Start int // Include
 	End   int // Exclude
-	len   int // end - start
+	len   int // End - Start
 }
 
 func NewStripSegment(start int, end int) StripSegment {

@@ -2,7 +2,6 @@ package display
 
 import (
 	"fmt"
-	"os"
 	"reflect"
 	"runtime"
 	"strings"
@@ -34,7 +33,7 @@ func checkError(err error) {
 	}
 }
 
-func Run(plog logr.Logger) {
+func Run(plog logr.Logger, args []string) {
 	log = plog.WithName("display")
 
 	// Initialize LED Strip
@@ -50,10 +49,6 @@ func Run(plog logr.Logger) {
 	log.V(0).Info("Initiating led strip 💡", "options", fmt.Sprintf("%+v", options))
 	strip = &led.Ws2811Control{Strip: nil, Options: options}
 	strip.Init()
-
-	// Program args
-	args := os.Args[1:]
-	log.V(0).Info("Program args 🎈", "args", args)
 
 	// Initialize animaters
 	log.V(0).Info("Initializing animater 🕺", "dimension", "1d")
@@ -78,9 +73,13 @@ func Run(plog logr.Logger) {
 			animations = append(animations, led.AnimUnit{
 				CancelToken: make(chan struct{}),
 				Segment:     led.NewStripSegment(0, 36),
-				Anim:        anim1d.Wipe,
+				Anim:        anim1d.Maze,
 				Options: map[string]any{
-					"wait": 30 * time.Millisecond,
+					"wait":          30 * time.Millisecond,
+					"count":         3,
+					"turn_chance":   2,
+					"color":         uint32(0x00ff88ff),
+					"contact_color": uint32(0xff00ffff),
 				},
 			})
 			animations = append(animations, led.AnimUnit{
@@ -96,7 +95,8 @@ func Run(plog logr.Logger) {
 				Segment:     led.NewStripSegment(72, 108),
 				Anim:        anim1d.Wipe,
 				Options: map[string]any{
-					"wait": 30 * time.Millisecond,
+					"wait":  30 * time.Millisecond,
+					"color": uint32(0x00ff0077),
 				},
 			})
 			animations = append(animations, led.AnimUnit{
@@ -107,7 +107,6 @@ func Run(plog logr.Logger) {
 					"wait": 5 * time.Millisecond,
 				},
 			})
-
 		} else if args[0] == "wipe" {
 			log.V(0).Info("Wipe 🎢")
 			animations = append(animations, led.AnimUnit{
@@ -116,6 +115,20 @@ func Run(plog logr.Logger) {
 				Anim:        anim1d.Wipe,
 				Options: map[string]any{
 					"wait": 10 * time.Millisecond,
+				},
+			})
+		} else if args[0] == "maze" {
+			log.V(0).Info("Maze 🌌")
+			animations = append(animations, led.AnimUnit{
+				CancelToken: make(chan struct{}),
+				Segment:     led.NewStripSegment(0, 144),
+				Anim:        anim1d.Maze,
+				Options: map[string]any{
+					"wait":          30 * time.Millisecond,
+					"count":         10,
+					"turn_chance":   2,
+					"color":         uint32(0x000000ff),
+					"contact_color": uint32(0xff000000),
 				},
 			})
 		}
@@ -130,16 +143,16 @@ func Run(plog logr.Logger) {
 	}
 
 	for i, animUnit := range animations {
-		log.V(0).Info("Starting animation", "index", i, "name", GetFunctionName(animUnit.Anim))
+		log.V(0).Info("Starting animation", "index", i, "name", GetFunctionName(animUnit.Anim), "segment", animUnit.Segment, "options", animUnit.Options)
 		animUnit.StartAnimation()
 	}
 	log.V(0).Info("All animation started 🙂.")
-	time.Sleep(5 * time.Second)
-	for i, animUnit := range animations {
-		log.V(0).Info("Stopping animation", "index", i, "name", GetFunctionName(animUnit.Anim))
-		animUnit.StopAnimation()
-	}
-	log.V(0).Info("All animation stopped 😐.")
+	//time.Sleep(5 * time.Second)
+	//for i, animUnit := range animations {
+	//	log.V(0).Info("Stopping animation", "index", i, "name", GetFunctionName(animUnit.Anim))
+	//	animUnit.StopAnimation()
+	//}
+	//log.V(0).Info("All animation stopped 😐.")
 }
 
 func RenderContinuously() {

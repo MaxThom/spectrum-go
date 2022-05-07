@@ -6,6 +6,9 @@ run: build
 wipe: build
 	sudo ./bin/spectrum wipe
 
+maze: build
+	sudo ./bin/spectrum maze
+
 clear: build
 	sudo ./bin/spectrum clear
 

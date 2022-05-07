@@ -33,7 +33,7 @@ func main() {
 	args := os.Args[1:]
 	log.V(0).Info("Args", "args", args)
 
-	display.Run(log)
+	display.Run(log, args)
 
 	// Then blocking (waiting for quit signal):
 	<-quit
