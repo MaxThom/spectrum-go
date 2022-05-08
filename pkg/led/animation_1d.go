@@ -35,7 +35,7 @@ func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, opt
 	}
 }
 
-func (s *Animation_1d) Rainbown(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
+func (s *Animation_1d) Rainbow(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
 	wait := utils.If_key_exist_else(options, "wait", 1*time.Millisecond)
 	for {
 		for i := 0; i < 256; i++ {

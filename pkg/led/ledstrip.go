@@ -13,6 +13,7 @@ type LedstripControl interface {
 	GetLed(i int, channel int) uint32
 	Count(channel int) int
 	Render() error
+	RenderContinuously()
 	Sync() error
 	SetBrightness(channel int, brightness int)
 	SetCustomGammaFactor(gammaFactor float64)
@@ -127,4 +128,15 @@ func (s *Ws2811Control) SetLedSync(channel int, leds []uint32) {
 
 func (s *Ws2811Control) Dispose() {
 	s.Strip.Fini()
+}
+
+func (s *Ws2811Control) RenderContinuously() {
+	for {
+		//t1 := time.Now()
+		utils.CheckError(s.Render())
+		utils.CheckError(s.Sync())
+		//t2 := time.Now()
+		//diff := t2.Sub(t1)
+		//log.V(0).Info("Render time", "ms", diff)
+	}
 }
