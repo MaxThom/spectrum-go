@@ -53,10 +53,9 @@ func Init(plog logr.Logger, args []string) {
 
 func PlayDefaultAnimations() {
 	animations = append(animations, &led.AnimUnit{
-		CancelToken: make(chan struct{}),
-		Segment:     led.NewStripSegment(0, 36),
-		Animer:      anim1d,
-		Animation:   "Maze",
+		Segment:   led.NewStripSegment(0, 36),
+		Animer:    anim1d,
+		Animation: "Maze",
 		Options: map[string]string{
 			"wait":          "50",
 			"count":         "3",
@@ -67,20 +66,18 @@ func PlayDefaultAnimations() {
 		IsRunning: false,
 	})
 	animations = append(animations, &led.AnimUnit{
-		CancelToken: make(chan struct{}),
-		Segment:     led.NewStripSegment(36, 72),
-		Animer:      anim1d,
-		Animation:   "Rainbow",
+		Segment:   led.NewStripSegment(36, 72),
+		Animer:    anim1d,
+		Animation: "Rainbow",
 		Options: map[string]string{
 			"wait": "5",
 		},
 		IsRunning: false,
 	})
 	animations = append(animations, &led.AnimUnit{
-		CancelToken: make(chan struct{}),
-		Segment:     led.NewStripSegment(72, 108),
-		Animer:      anim1d,
-		Animation:   "Wipe",
+		Segment:   led.NewStripSegment(72, 108),
+		Animer:    anim1d,
+		Animation: "Wipe",
 		Options: map[string]string{
 			"wait":  "30",
 			"color": "0x00ff0077",
@@ -88,10 +85,9 @@ func PlayDefaultAnimations() {
 		IsRunning: false,
 	})
 	animations = append(animations, &led.AnimUnit{
-		CancelToken: make(chan struct{}),
-		Segment:     led.NewStripSegment(108, 144),
-		Animer:      anim1d,
-		Animation:   "Rainbow",
+		Segment:   led.NewStripSegment(108, 144),
+		Animer:    anim1d,
+		Animation: "Rainbow",
 		Options: map[string]string{
 			"wait": "5",
 		},
@@ -114,12 +110,11 @@ func SetAnimation(anim AnimUnitDO) {
 	}
 
 	play := &led.AnimUnit{
-		CancelToken: make(chan struct{}),
-		Segment:     led.NewStripSegment(anim.Segment.Start, anim.Segment.End),
-		Animer:      anim1d,
-		Animation:   anim.Animation,
-		Options:     anim.Options,
-		IsRunning:   false,
+		Segment:   led.NewStripSegment(anim.Segment.Start, anim.Segment.End),
+		Animer:    anim1d,
+		Animation: anim.Animation,
+		Options:   anim.Options,
+		IsRunning: false,
 	}
 
 	if len(animations) > anim.Index {
@@ -141,7 +136,6 @@ func StopAnimation(anim AnimStopDO) {
 		log.V(0).Info("Stopping animation", "index", anim.Index, "details", animations[anim.Index])
 		animations[anim.Index].StopAnimation()
 		if anim.ShouldClear {
-			animations[anim.Index].CancelToken = make(chan struct{})
 			animations[anim.Index].Animation = "Clear"
 			animations[anim.Index].StartAnimation()
 		}
@@ -153,7 +147,6 @@ func stopAllAnimations(shouldClear bool) {
 	for _, animUnit := range animations {
 		animUnit.StopAnimation()
 		if shouldClear {
-			animUnit.CancelToken = make(chan struct{})
 			animUnit.Animation = "Clear"
 			animUnit.StartAnimation()
 		}
