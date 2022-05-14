@@ -10,3 +10,12 @@ type AnimUnitDO struct {
 	Animation string            `json:"animation"`
 	Options   map[string]string `json:"options"`
 }
+
+type AnimStopDO struct {
+	Index       int  `json:"index"`
+	ShouldClear bool `json:"shouldClear"`
+}
+
+type BrightnessDO struct {
+	Brightness int `json:"brightness"`
+}

@@ -5,7 +5,6 @@ import (
 
 	"github.com/go-logr/logr"
 	"github.com/maxthom/spectrum-go/pkg/led"
-	"github.com/maxthom/spectrum-go/pkg/utils"
 )
 
 var (
@@ -56,8 +55,8 @@ func PlayDefaultAnimations() {
 	animations = append(animations, &led.AnimUnit{
 		CancelToken: make(chan struct{}),
 		Segment:     led.NewStripSegment(0, 36),
-		Anim:        anim1d.Maze,
-		Animation:   utils.GetFunctionName(anim1d.Maze),
+		Animer:      anim1d,
+		Animation:   "Maze",
 		Options: map[string]string{
 			"wait":          "50",
 			"count":         "3",
@@ -70,8 +69,8 @@ func PlayDefaultAnimations() {
 	animations = append(animations, &led.AnimUnit{
 		CancelToken: make(chan struct{}),
 		Segment:     led.NewStripSegment(36, 72),
-		Anim:        anim1d.Rainbow,
-		Animation:   utils.GetFunctionName(anim1d.Rainbow),
+		Animer:      anim1d,
+		Animation:   "Rainbow",
 		Options: map[string]string{
 			"wait": "5",
 		},
@@ -80,8 +79,8 @@ func PlayDefaultAnimations() {
 	animations = append(animations, &led.AnimUnit{
 		CancelToken: make(chan struct{}),
 		Segment:     led.NewStripSegment(72, 108),
-		Anim:        anim1d.Wipe,
-		Animation:   utils.GetFunctionName(anim1d.Wipe),
+		Animer:      anim1d,
+		Animation:   "Wipe",
 		Options: map[string]string{
 			"wait":  "30",
 			"color": "0x00ff0077",
@@ -91,8 +90,8 @@ func PlayDefaultAnimations() {
 	animations = append(animations, &led.AnimUnit{
 		CancelToken: make(chan struct{}),
 		Segment:     led.NewStripSegment(108, 144),
-		Anim:        anim1d.Rainbow,
-		Animation:   utils.GetFunctionName(anim1d.Rainbow),
+		Animer:      anim1d,
+		Animation:   "Rainbow",
 		Options: map[string]string{
 			"wait": "5",
 		},
@@ -103,22 +102,22 @@ func PlayDefaultAnimations() {
 	for i, animUnit := range animations {
 		//m.log.V(0).Info("Starting default animation", "index", i, "name", utils.GetFunctionName(animUnit.Anim), "segment", animUnit.Segment, "options", animUnit.Options)
 		log.V(0).Info("Starting default animation", "index", i, "details", animUnit)
-		animUnit.StartAnimation(anim1d)
+		animUnit.StartAnimation()
 	}
 	log.V(0).Info("All animation started 🙂.")
 }
 
 func SetAnimation(anim AnimUnitDO) {
 	if anim.Index == -1 {
-		clearAllAnimations()
+		stopAllAnimations(true)
 		anim.Index = 0
 	}
 
 	play := &led.AnimUnit{
 		CancelToken: make(chan struct{}),
 		Segment:     led.NewStripSegment(anim.Segment.Start, anim.Segment.End),
-		Anim:        anim1d.Maze,
-		Animation:   utils.GetFunctionName(anim1d.Maze),
+		Animer:      anim1d,
+		Animation:   anim.Animation,
 		Options:     anim.Options,
 		IsRunning:   false,
 	}
@@ -132,12 +131,32 @@ func SetAnimation(anim AnimUnitDO) {
 	}
 
 	log.V(0).Info("Starting animation", "index", anim.Index, "details", animations[anim.Index])
-	animations[anim.Index].StartAnimation(anim1d)
+	animations[anim.Index].StartAnimation()
 }
 
-func clearAllAnimations() {
+func StopAnimation(anim AnimStopDO) {
+	if anim.Index == -1 {
+		stopAllAnimations(anim.ShouldClear)
+	} else if len(animations) > anim.Index {
+		log.V(0).Info("Stopping animation", "index", anim.Index, "details", animations[anim.Index])
+		animations[anim.Index].StopAnimation()
+		if anim.ShouldClear {
+			animations[anim.Index].CancelToken = make(chan struct{})
+			animations[anim.Index].Animation = "Clear"
+			animations[anim.Index].StartAnimation()
+		}
+	}
+
+}
+
+func stopAllAnimations(shouldClear bool) {
 	for _, animUnit := range animations {
 		animUnit.StopAnimation()
+		if shouldClear {
+			animUnit.CancelToken = make(chan struct{})
+			animUnit.Animation = "Clear"
+			animUnit.StartAnimation()
+		}
 	}
 	log.V(0).Info("All animation stopped 😐.")
 	animations = []*led.AnimUnit{}

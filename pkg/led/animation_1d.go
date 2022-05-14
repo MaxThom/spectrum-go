@@ -14,7 +14,7 @@ type Animation_1d struct {
 	Strip LedstripControl
 }
 
-func (s *Animation_1d) Clear_strip(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
+func (s *Animation_1d) Clear(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
 	for i := segment.Start; i < segment.End; i++ {
 		s.Strip.SetLed(0, i, 0x00000000)
 	}
@@ -24,7 +24,7 @@ func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, opt
 	wait := getWaitMsOption(options, "wait", 1*time.Millisecond)
 	color := getColorOption(options, "color", uint32(0xff000000))
 	for {
-		s.Clear_strip(cancelToken, segment, options)
+		s.Clear(cancelToken, segment, options)
 		for i := segment.Start; i < segment.End; i++ {
 			s.Strip.SetLed(0, i, color)
 			time.Sleep(5*time.Millisecond + wait)
