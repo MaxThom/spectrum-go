@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
@@ -32,27 +33,43 @@ func main() {
 
 	// Setup api
 	r := gin.Default()
-	r.GET("/discovery", spectrum.GetDiscovery)       // Discover all animations with options
-	r.GET("/animation", spectrum.GetAnimation)       // Get list of all running animation
-	r.POST("/animation", spectrum.PostAnimation)     // Start a new anination
-	r.DELETE("/animation", spectrum.DeleteAnimation) // Stop a new animation
-	r.GET("/settings", spectrum.GetSettings)         // Get all settings
-	r.POST("/settings", spectrum.PostSettings)       // Set all settings
-	r.GET("/brightness", spectrum.GetBrightness)     // Get brightness
-	r.POST("/brightness", spectrum.PostBrightness)   // Set brightness
-	r.GET("/wifi", spectrum.GetWifi)                 // Set wifi settings
-	r.POST("/wifi", spectrum.PostWifi)               // Set wifi settings
+	isReady := false
+	health := r.Group("")
+	{
+		health.GET("/alive", func(c *gin.Context) {
+			c.String(http.StatusOK, "alive")
+		})
+		health.GET("/ready", func(c *gin.Context) {
+			c.String(http.StatusOK, "%v", isReady)
+		})
+	}
+	v1 := r.Group("/api")
+	{
+		v1.GET("/discovery", spectrum.GetDiscovery)       // Discover all animations with options
+		v1.GET("/animation", spectrum.GetAnimation)       // Get list of all running animation
+		v1.POST("/animation", spectrum.PostAnimation)     // Start a new anination
+		v1.DELETE("/animation", spectrum.DeleteAnimation) // Stop a new animation
+		v1.GET("/settings", spectrum.GetSettings)         // Get all settings
+		v1.POST("/settings", spectrum.PostSettings)       // Set all settings
+		v1.GET("/brightness", spectrum.GetBrightness)     // Get brightness
+		v1.POST("/brightness", spectrum.PostBrightness)   // Set brightness
+		v1.GET("/wifi", spectrum.GetWifi)                 // Set wifi settings
+		v1.POST("/wifi", spectrum.PostWifi)               // Set wifi settings
+	}
 
 	// Get program args
 	args := os.Args[1:]
 	log.V(0).Info("Args", "args", args)
 
 	// Spectrum
-	spectrum.Run(log, args)
+	spectrum.Init(log, args)
+	spectrum.PlayDefaultAnimations()
+
 	// Gin
+	isReady = true
 	r.Run(":8080")
 	// Then blocking (waiting for quit signal):
-	<-quit
+	//<-quit
 
 	// And in another goroutine if you want to quit:
 	// close(quit)

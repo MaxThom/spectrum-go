@@ -1,14 +1,14 @@
 package led
 
-type AnimFunc func(chan struct{}, StripSegment, map[string]any)
+type AnimFunc func(chan struct{}, StripSegment, map[string]string)
 
 type AnimUnit struct {
-	CancelToken chan struct{}  `json:"-"`
-	Segment     StripSegment   `json:"segment"`
-	Anim        AnimFunc       `json:"-"`
-	Animation   string         `json:"animation"`
-	Options     map[string]any `json:"options"`
-	IsRunning   bool           `json:"isRunning"`
+	CancelToken chan struct{}     `json:"-"`
+	Segment     StripSegment      `json:"segment"`
+	Anim        AnimFunc          `json:"-"`
+	Animation   string            `json:"animation"`
+	Options     map[string]string `json:"options"`
+	IsRunning   bool              `json:"isRunning"`
 }
 
 func (s *AnimUnit) StartAnimation() {
@@ -17,8 +17,8 @@ func (s *AnimUnit) StartAnimation() {
 }
 
 func (s *AnimUnit) StopAnimation() {
-	s.IsRunning = false
-	if s.CancelToken != nil {
+	if s.IsRunning && s.CancelToken != nil {
 		close(s.CancelToken)
 	}
+	s.IsRunning = false
 }

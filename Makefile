@@ -13,4 +13,4 @@ clear: build
 	sudo ./bin/spectrum clear
 
 build:
-	go build -v -o ./bin/spectrum ./cmd/spectrum/
+	go build -o ./bin/spectrum ./cmd/spectrum/

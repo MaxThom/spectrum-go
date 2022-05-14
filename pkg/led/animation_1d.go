@@ -14,15 +14,15 @@ type Animation_1d struct {
 	Strip LedstripControl
 }
 
-func (s *Animation_1d) Clear_strip(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
+func (s *Animation_1d) Clear_strip(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
 	for i := segment.Start; i < segment.End; i++ {
 		s.Strip.SetLed(0, i, 0x00000000)
 	}
 }
 
-func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
-	wait := utils.If_key_exist_else(options, "wait", 1*time.Millisecond)
-	color := utils.If_key_exist_else(options, "color", uint32(0xff000000))
+func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
+	wait := getWaitMsOption(options, "wait", 1*time.Millisecond)
+	color := getColorOption(options, "color", uint32(0xff000000))
 	for {
 		s.Clear_strip(cancelToken, segment, options)
 		for i := segment.Start; i < segment.End; i++ {
@@ -35,8 +35,8 @@ func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, opt
 	}
 }
 
-func (s *Animation_1d) Rainbow(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
-	wait := utils.If_key_exist_else(options, "wait", 1*time.Millisecond)
+func (s *Animation_1d) Rainbow(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
+	wait := getWaitMsOption(options, "wait", 1*time.Millisecond)
 	for {
 		for i := 0; i < 256; i++ {
 			for j := segment.Start; j < segment.End; j++ {
@@ -50,12 +50,12 @@ func (s *Animation_1d) Rainbow(cancelToken chan struct{}, segment StripSegment, 
 	}
 }
 
-func (s *Animation_1d) Maze(cancelToken chan struct{}, segment StripSegment, options map[string]any) {
-	wait := utils.If_key_exist_else(options, "wait", 1*time.Millisecond)
-	count := utils.If_key_exist_else(options, "count", 10)
-	turn_chance := utils.If_key_exist_else(options, "turn_chance", 2)
-	color := utils.If_key_exist_else(options, "color", uint32(0x000000ff))
-	contact_color := utils.If_key_exist_else(options, "contact_color", uint32(0xff000000))
+func (s *Animation_1d) Maze(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
+	wait := getWaitMsOption(options, "wait", 1*time.Millisecond)
+	count := getIntOption(options, "count", 10)
+	turn_chance := getIntOption(options, "turn_chance", 2)
+	color := getColorOption(options, "color", uint32(0x000000ff))
+	contact_color := getColorOption(options, "contact_color", uint32(0xff000000))
 
 	// Generate initial positions for all dots
 	dots := []*Position{}

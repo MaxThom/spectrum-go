@@ -4,28 +4,24 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/go-logr/logr"
 )
-
-var (
-	mngr *AnimManager
-)
-
-func Run(log logr.Logger, args []string) {
-	mngr = NewAnimManager(log, args)
-	mngr.PlayDefaultAnimations()
-}
 
 func GetDiscovery(c *gin.Context) {
 
 }
 
 func GetAnimation(c *gin.Context) {
-	c.JSON(http.StatusOK, mngr.GetAnimations())
+	c.JSON(http.StatusOK, animations)
 }
 
 func PostAnimation(c *gin.Context) {
-
+	var anim AnimUnitDO
+	if err := c.ShouldBindJSON(&anim); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	SetAnimation(anim)
+	c.JSON(http.StatusOK, anim)
 }
 
 func DeleteAnimation(c *gin.Context) {
