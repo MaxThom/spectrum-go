@@ -63,7 +63,6 @@ func PlayDefaultAnimations() {
 			"color":         "0x00ff88ff",
 			"contact_color": "0xff00ffff",
 		},
-		IsRunning: false,
 	})
 	animations = append(animations, &led.AnimUnit{
 		Segment:   led.NewStripSegment(36, 72),
@@ -72,7 +71,6 @@ func PlayDefaultAnimations() {
 		Options: map[string]string{
 			"wait": "5",
 		},
-		IsRunning: false,
 	})
 	animations = append(animations, &led.AnimUnit{
 		Segment:   led.NewStripSegment(72, 108),
@@ -82,7 +80,6 @@ func PlayDefaultAnimations() {
 			"wait":  "30",
 			"color": "0x00ff0077",
 		},
-		IsRunning: false,
 	})
 	animations = append(animations, &led.AnimUnit{
 		Segment:   led.NewStripSegment(108, 144),
@@ -91,7 +88,6 @@ func PlayDefaultAnimations() {
 		Options: map[string]string{
 			"wait": "5",
 		},
-		IsRunning: false,
 	})
 
 	// Start animations...
@@ -114,7 +110,6 @@ func SetAnimation(anim AnimUnitDO) {
 		Animer:    anim1d,
 		Animation: anim.Animation,
 		Options:   anim.Options,
-		IsRunning: false,
 	}
 
 	if len(animations) > anim.Index {
@@ -139,6 +134,7 @@ func StopAnimation(anim AnimStopDO) {
 			animations[anim.Index].Animation = "Clear"
 			animations[anim.Index].StartAnimation()
 		}
+		animations = append(animations[:anim.Index], animations[anim.Index+1:]...)
 	}
 
 }
