@@ -1,13 +1,7 @@
 .PHONY: run clear build
 
 run: build
-	sudo ./bin/spectrum rainbow
-
-wipe: build
-	sudo ./bin/spectrum wipe
-
-maze: build
-	sudo ./bin/spectrum maze
+	sudo ./bin/spectrum
 
 clear: build
 	sudo ./bin/spectrum clear

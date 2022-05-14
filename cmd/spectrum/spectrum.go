@@ -48,7 +48,7 @@ func main() {
 		v1.GET("/discovery", spectrum.GetDiscovery)       // Discover all animations with options
 		v1.GET("/animation", spectrum.GetAnimation)       // Get list of all running animation
 		v1.POST("/animation", spectrum.PostAnimation)     // Start a new anination
-		v1.DELETE("/animation", spectrum.DeleteAnimation) // Stop a new animation
+		v1.DELETE("/animation", spectrum.DeleteAnimation) // Stop an animation
 		v1.GET("/settings", spectrum.GetSettings)         // Get all settings
 		v1.POST("/settings", spectrum.PostSettings)       // Set all settings
 		v1.GET("/brightness", spectrum.GetBrightness)     // Get brightness
@@ -78,7 +78,7 @@ func main() {
 func printWelcomeMessage() {
 	fmt.Println(`
 --------------------------------------------------------
- _____                     _                           
+ ______                    __                          
  /  ___|                   | |                          
  \ '--.  _ __    ___   ___ | |_  _ __  _   _  _ __ ___  
   '--. \| '_ \  / _ \ / __|| __|| '__|| | | || '_ '  _ \ 

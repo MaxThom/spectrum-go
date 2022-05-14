@@ -8,6 +8,9 @@ import (
 	"github.com/maxthom/spectrum-go/pkg/utils"
 )
 
+type Animer interface {
+}
+
 type Position struct {
 	position  int
 	direction int

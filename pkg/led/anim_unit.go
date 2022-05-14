@@ -1,5 +1,7 @@
 package led
 
+import "github.com/maxthom/spectrum-go/pkg/utils"
+
 type AnimFunc func(chan struct{}, StripSegment, map[string]string)
 
 type AnimUnit struct {
@@ -11,9 +13,10 @@ type AnimUnit struct {
 	IsRunning   bool              `json:"isRunning"`
 }
 
-func (s *AnimUnit) StartAnimation() {
+func (s *AnimUnit) StartAnimation(anim1d *Animation_1d) {
 	s.IsRunning = true
-	go s.Anim(s.CancelToken, s.Segment, s.Options)
+	utils.InvokeAsync(anim1d, "Wipe", s.CancelToken, s.Segment, s.Options)
+	//go s.Anim(s.CancelToken, s.Segment, s.Options)
 }
 
 func (s *AnimUnit) StopAnimation() {

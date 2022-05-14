@@ -4,6 +4,8 @@
 
 https://github.com/rpi-ws281x/rpi-ws281x-go
 
+[LED Colors](https://www.springtree.net/audio-visual-blog/rgb-led-color-mixing/)
+
 ## File structure
 
 ```

@@ -1,0 +1,6 @@
+make --dry-run --always-make --keep-going --print-directory
+make: Entering directory '/home/pi/spectrum-go'
+go build -o ./bin/spectrum ./cmd/spectrum/
+sudo ./bin/spectrum rainbow
+make: Leaving directory '/home/pi/spectrum-go'
+ 

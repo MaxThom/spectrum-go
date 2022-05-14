@@ -103,7 +103,7 @@ func PlayDefaultAnimations() {
 	for i, animUnit := range animations {
 		//m.log.V(0).Info("Starting default animation", "index", i, "name", utils.GetFunctionName(animUnit.Anim), "segment", animUnit.Segment, "options", animUnit.Options)
 		log.V(0).Info("Starting default animation", "index", i, "details", animUnit)
-		animUnit.StartAnimation()
+		animUnit.StartAnimation(anim1d)
 	}
 	log.V(0).Info("All animation started 🙂.")
 }
@@ -132,7 +132,7 @@ func SetAnimation(anim AnimUnitDO) {
 	}
 
 	log.V(0).Info("Starting animation", "index", anim.Index, "details", animations[anim.Index])
-	animations[anim.Index].StartAnimation()
+	animations[anim.Index].StartAnimation(anim1d)
 }
 
 func clearAllAnimations() {
