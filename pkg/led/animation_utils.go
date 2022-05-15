@@ -45,7 +45,7 @@ func getColorOption(dict map[string]string, key string, def uint32) uint32 {
 	return def
 }
 
-func getWaitMsOption(dict map[string]string, key string, def time.Duration) time.Duration {
+func getTimeMsOption(dict map[string]string, key string, def time.Duration) time.Duration {
 	if strVal, ok := dict[key]; ok {
 		val, err := strconv.ParseInt(strVal, 0, 32)
 		utils.CheckError(err)

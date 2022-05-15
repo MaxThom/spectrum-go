@@ -8,6 +8,35 @@ import (
 )
 
 func GetDiscovery(c *gin.Context) {
+	c.JSON(http.StatusOK, []DiscoveryDO{
+		{
+			Animation: "Clear",
+			Options:   map[string]string{},
+		},
+		{
+			Animation: "Wipe",
+			Options: map[string]string{
+				"wait":  "TimeMs",
+				"color": "Color",
+			},
+		},
+		{
+			Animation: "Rainbow",
+			Options: map[string]string{
+				"wait": "TimeMs",
+			},
+		},
+		{
+			Animation: "Maze",
+			Options: map[string]string{
+				"wait":          "TimeMs",
+				"color":         "Color",
+				"contact_color": "Color",
+				"count":         "Int",
+				"turn_chance":   "Int",
+			},
+		},
+	})
 
 }
 

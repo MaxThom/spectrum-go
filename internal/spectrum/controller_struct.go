@@ -19,3 +19,8 @@ type AnimStopDO struct {
 type BrightnessDO struct {
 	Brightness int `json:"brightness"`
 }
+
+type DiscoveryDO struct {
+	Animation string            `json:"animation"`
+	Options   map[string]string `json:"options"`
+}

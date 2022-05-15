@@ -58,7 +58,7 @@ func (s *LedstripOptions) WriteToFile(filePath string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(filePath, file, 0644)
+	err = ioutil.WriteFile(filePath, file, 0777)
 	if err != nil {
 		return err
 	}

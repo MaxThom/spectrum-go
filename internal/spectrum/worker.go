@@ -46,12 +46,6 @@ func Init(p_options *led.LedstripOptions) {
 
 func PlayDefaultAnimations() {
 	segmentCount := options.LedCount / 4
-	fmt.Println(segmentCount)
-	fmt.Println(segmentCount * 0)
-	fmt.Println(segmentCount * 1)
-	fmt.Println(segmentCount * 2)
-	fmt.Println(segmentCount * 3)
-	fmt.Println(segmentCount * 4)
 	animations = append(animations, &led.AnimUnit{
 		Segment:   led.NewStripSegment(segmentCount*0, segmentCount*1),
 		Animer:    anim1d,

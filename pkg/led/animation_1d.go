@@ -21,7 +21,7 @@ func (s *Animation_1d) Clear(cancelToken chan struct{}, segment StripSegment, op
 }
 
 func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
-	wait := getWaitMsOption(options, "wait", 1*time.Millisecond)
+	wait := getTimeMsOption(options, "wait", 1*time.Millisecond)
 	color := getColorOption(options, "color", uint32(0xff000000))
 	for {
 		s.Clear(cancelToken, segment, options)
@@ -36,7 +36,7 @@ func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, opt
 }
 
 func (s *Animation_1d) Rainbow(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
-	wait := getWaitMsOption(options, "wait", 1*time.Millisecond)
+	wait := getTimeMsOption(options, "wait", 1*time.Millisecond)
 	for {
 		for i := 0; i < 256; i++ {
 			for j := segment.Start; j < segment.End; j++ {
@@ -51,7 +51,7 @@ func (s *Animation_1d) Rainbow(cancelToken chan struct{}, segment StripSegment, 
 }
 
 func (s *Animation_1d) Maze(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
-	wait := getWaitMsOption(options, "wait", 1*time.Millisecond)
+	wait := getTimeMsOption(options, "wait", 1*time.Millisecond)
 	count := getIntOption(options, "count", 10)
 	turn_chance := getIntOption(options, "turn_chance", 2)
 	color := getColorOption(options, "color", uint32(0x000000ff))
