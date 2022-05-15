@@ -36,16 +36,6 @@ func NewStripSegment(start int, end int) StripSegment {
 	}
 }
 
-type LedstripOptions struct {
-	Brightness     int
-	LedCount       int
-	GpioPin        int
-	RenderWaitTime int
-	Frequency      int
-	DmaNum         int
-	StripType      string
-}
-
 type Ws2811Control struct {
 	Strip   *ws2811.WS2811
 	Options LedstripOptions

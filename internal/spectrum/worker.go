@@ -10,35 +10,28 @@ import (
 var (
 	log        logr.Logger
 	strip      led.LedstripControl
+	options    *led.LedstripOptions
 	anim1d     *led.Animation_1d
 	animations []*led.AnimUnit
 )
 
 const (
-	brightness     = 128
-	ledCounts      = 144
-	gpioPin        = 18
-	renderWaitTime = 0
-	frequency      = 1200000
-	dmaNum         = 10
-	stripType      = "SK6812StripGRBW"
+	pathToConfig = "configs/spectrum/ledstrip.json"
 )
 
-func Init(plog logr.Logger, args []string) {
+func Run(plog logr.Logger) {
 	log = plog.WithName("controller")
 
+	Init(led.NewFromFileLedstripOptions(pathToConfig))
+	PlayDefaultAnimations()
+}
+
+func Init(p_options *led.LedstripOptions) {
 	// Initialize LED Strip
-	options := led.LedstripOptions{
-		Brightness:     brightness,
-		LedCount:       ledCounts,
-		GpioPin:        gpioPin,
-		RenderWaitTime: renderWaitTime,
-		Frequency:      frequency,
-		DmaNum:         dmaNum,
-		StripType:      stripType,
-	}
+	options = p_options
+
 	log.V(0).Info("Initiating led strip 💡", "options", fmt.Sprintf("%+v", options))
-	strip = &led.Ws2811Control{Strip: nil, Options: options}
+	strip = &led.Ws2811Control{Strip: nil, Options: *options}
 	strip.Init()
 
 	// Initialize animaters
@@ -52,8 +45,15 @@ func Init(plog logr.Logger, args []string) {
 }
 
 func PlayDefaultAnimations() {
+	segmentCount := options.LedCount / 4
+	fmt.Println(segmentCount)
+	fmt.Println(segmentCount * 0)
+	fmt.Println(segmentCount * 1)
+	fmt.Println(segmentCount * 2)
+	fmt.Println(segmentCount * 3)
+	fmt.Println(segmentCount * 4)
 	animations = append(animations, &led.AnimUnit{
-		Segment:   led.NewStripSegment(0, 36),
+		Segment:   led.NewStripSegment(segmentCount*0, segmentCount*1),
 		Animer:    anim1d,
 		Animation: "Maze",
 		Options: map[string]string{
@@ -65,7 +65,7 @@ func PlayDefaultAnimations() {
 		},
 	})
 	animations = append(animations, &led.AnimUnit{
-		Segment:   led.NewStripSegment(36, 72),
+		Segment:   led.NewStripSegment(segmentCount*1, segmentCount*2),
 		Animer:    anim1d,
 		Animation: "Rainbow",
 		Options: map[string]string{
@@ -73,7 +73,7 @@ func PlayDefaultAnimations() {
 		},
 	})
 	animations = append(animations, &led.AnimUnit{
-		Segment:   led.NewStripSegment(72, 108),
+		Segment:   led.NewStripSegment(segmentCount*2, segmentCount*3),
 		Animer:    anim1d,
 		Animation: "Wipe",
 		Options: map[string]string{
@@ -82,7 +82,7 @@ func PlayDefaultAnimations() {
 		},
 	})
 	animations = append(animations, &led.AnimUnit{
-		Segment:   led.NewStripSegment(108, 144),
+		Segment:   led.NewStripSegment(segmentCount*3, segmentCount*4),
 		Animer:    anim1d,
 		Animation: "Rainbow",
 		Options: map[string]string{
@@ -102,6 +102,7 @@ func PlayDefaultAnimations() {
 func SetAnimation(anim AnimUnitDO) {
 	if anim.Index == -1 {
 		stopAllAnimations(true)
+		animations = []*led.AnimUnit{}
 		anim.Index = 0
 	}
 
@@ -127,6 +128,7 @@ func SetAnimation(anim AnimUnitDO) {
 func StopAnimation(anim AnimStopDO) {
 	if anim.Index == -1 {
 		stopAllAnimations(anim.ShouldClear)
+		animations = []*led.AnimUnit{}
 	} else if len(animations) > anim.Index {
 		log.V(0).Info("Stopping animation", "index", anim.Index, "details", animations[anim.Index])
 		animations[anim.Index].StopAnimation()
@@ -148,5 +150,11 @@ func stopAllAnimations(shouldClear bool) {
 		}
 	}
 	log.V(0).Info("All animation stopped 😐.")
-	animations = []*led.AnimUnit{}
+}
+
+func startAllAnimations() {
+	for _, animUnit := range animations {
+		animUnit.StartAnimation()
+	}
+	log.V(0).Info("All animation started 🙂.")
 }

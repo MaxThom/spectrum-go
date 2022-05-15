@@ -61,8 +61,7 @@ func main() {
 	log.V(0).Info("Args", "args", args)
 
 	// Spectrum
-	spectrum.Init(log, args)
-	spectrum.PlayDefaultAnimations()
+	spectrum.Run(log)
 
 	// Gin
 	isReady = true
