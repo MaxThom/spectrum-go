@@ -1,10 +1,13 @@
 .PHONY: run clear build
 
-run: build
+exec:
 	sudo ./bin/spectrum
 
-clear: build
+clear:
 	sudo ./bin/spectrum clear
+
+run: build
+	sudo ./bin/spectrum
 
 build:
 	go build -o ./bin/spectrum ./cmd/spectrum/

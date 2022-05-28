@@ -19,11 +19,16 @@ const (
 	pathToConfig = "configs/spectrum/ledstrip.json"
 )
 
-func Run(plog logr.Logger) {
+func Run(plog logr.Logger, args []string) {
 	log = plog.WithName("controller")
 
 	Init(led.NewFromFileLedstripOptions(pathToConfig))
-	PlayDefaultAnimations()
+
+	if len(args) > 0 && args[0] == "clear" {
+		PlayClear()
+	} else {
+		PlayDefaultAnimations()
+	}
 }
 
 func Init(p_options *led.LedstripOptions) {
@@ -42,6 +47,17 @@ func Init(p_options *led.LedstripOptions) {
 	log.V(0).Info("Initializing renderer 🎢")
 	go strip.RenderContinuously()
 
+}
+
+func PlayClear() {
+	anim := &led.AnimUnit{
+		Segment:   led.NewStripSegment(0, options.LedCount),
+		Animer:    anim1d,
+		Animation: "Clear",
+		Options:   map[string]string{},
+	}
+	log.V(0).Info("Starting clear animation 🧹", "details", anim)
+	anim.StartAnimation()
 }
 
 func PlayDefaultAnimations() {
