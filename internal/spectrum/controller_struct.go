@@ -21,6 +21,11 @@ type BrightnessDO struct {
 }
 
 type DiscoveryDO struct {
-	Animation string            `json:"animation"`
-	Options   map[string]string `json:"options"`
+	Animation string              `json:"animation"`
+	Options   map[string]OptionDO `json:"options"`
+}
+
+type OptionDO struct {
+	Type    string `json:"type"`
+	Default string `json:"default"`
 }

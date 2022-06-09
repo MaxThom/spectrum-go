@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat May 28 17:49:23 2022
+# Make data base, printed on Thu Jun  9 11:38:26 2022
 
 # Variables
 
@@ -103,7 +103,7 @@ MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
 # environment
-SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 52863 22
+SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 54533 22
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -133,7 +133,7 @@ _ = /home/pi/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/node
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-cc491aa8-f90f-4f73-b85b-22ee1009ec8f.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-240c5bc7-04c6-4e3d-a76a-baa3b5530634.sock
 # environment
 GOMODCACHE = /home/pi/go/pkg/mod
 # environment
@@ -143,7 +143,7 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 HOME = /home/pi
 # environment
-XDG_SESSION_ID = 4
+XDG_SESSION_ID = 79
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # default
@@ -155,7 +155,7 @@ SUFFIXES :=
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 52863 fe80::306:3516:f274:9175%wlan0 22
+SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 54533 fe80::306:3516:f274:9175%wlan0 22
 # variable set hash-table stats:
 # Load=72/1024=7%, Rehash=0, Collisions=2/102=2%
 
@@ -245,6 +245,6 @@ build:
 # strcache performance: lookups = 43 / hit rate = 32%
 # hash-table stats:
 # Load=29/8192=0%, Rehash=0, Collisions=0/43=0%
-# Finished Make data base on Sat May 28 17:49:23 2022
+# Finished Make data base on Thu Jun  9 11:38:26 2022
 
  

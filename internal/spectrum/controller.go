@@ -1,43 +1,76 @@
 package spectrum
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/maxthom/spectrum-go/pkg/led"
 )
 
 func GetDiscovery(c *gin.Context) {
-	c.JSON(http.StatusOK, []DiscoveryDO{
-		{
-			Animation: "Clear",
-			Options:   map[string]string{},
-		},
-		{
-			Animation: "Wipe",
-			Options: map[string]string{
-				"wait":  "TimeMs",
-				"color": "Color",
+	result := struct {
+		Options    *led.LedstripOptions `json:"options"`
+		Animations []DiscoveryDO        `json:"animations"`
+	}{
+		Options: options,
+		Animations: []DiscoveryDO{
+			{
+				Animation: "Clear",
+				Options:   map[string]OptionDO{},
+			},
+			{
+				Animation: "Wipe",
+				Options: map[string]OptionDO{
+					"wait": {
+						Type:    "TimeMs",
+						Default: "1",
+					},
+					"color": {
+						Type:    "Color",
+						Default: "0xff000000",
+					},
+				},
+			},
+			{
+				Animation: "Rainbow",
+				Options: map[string]OptionDO{
+					"wait": {
+						Type:    "TimeMs",
+						Default: "1",
+					},
+				},
+			},
+			{
+				Animation: "Maze",
+				Options: map[string]OptionDO{
+					"wait": {
+						Type:    "TimeMs",
+						Default: "1",
+					},
+					"color": {
+						Type:    "Color",
+						Default: "0x000000ff",
+					},
+					"contact_color": {
+						Type:    "Color",
+						Default: "0xff000000",
+					},
+					"count": {
+						Type:    "Int",
+						Default: "10",
+					},
+					"turn_chance": {
+						Type:    "Int",
+						Default: "2",
+					},
+				},
 			},
 		},
-		{
-			Animation: "Rainbow",
-			Options: map[string]string{
-				"wait": "TimeMs",
-			},
-		},
-		{
-			Animation: "Maze",
-			Options: map[string]string{
-				"wait":          "TimeMs",
-				"color":         "Color",
-				"contact_color": "Color",
-				"count":         "Int",
-				"turn_chance":   "Int",
-			},
-		},
-	})
-
+	}
+	fmt.Println(result)
+	c.JSON(http.StatusOK, result)
 }
 
 func GetAnimation(c *gin.Context) {
