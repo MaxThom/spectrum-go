@@ -19,9 +19,9 @@ RUN git clone https://github.com/jgarff/rpi_ws281x.git \
   && cmake --build . \
   && make install
 
-# Stage 1 : Build a go image with the rpi_ws281x C library and the go wrapper
+# Stage 1 : Build the go executable with the ws2811 library
 
-FROM golang:latest
+FROM golang:latest AS go_builder
 
 COPY --from=lib_builder /usr/local/lib/libws2811.a /usr/local/lib/
 COPY --from=lib_builder /usr/local/include/ws2811 /usr/local/include/ws2811
@@ -31,6 +31,17 @@ COPY go.mod ./
 COPY go.sum ./
 RUN go mod download
 
-COPY *.go ./
-RUN go build -o /spectrum
-CMD [ "/spectrum" ]
+COPY cmd/ ./cmd/
+COPY internal/ ./internal/
+COPY pkg/ ./pkg/
+
+RUN go build -o ./spectrum ./cmd/spectrum/
+
+# Stage 2 : Build the final image with the go executable
+
+FROM debian:stable-slim
+WORKDIR /app
+
+COPY --from=go_builder app/spectrum spectrum
+
+CMD [ "./spectrum" ]

@@ -1,7 +1,6 @@
 package spectrum
 
 import (
-	"fmt"
 	"net/http"
 	"os"
 
@@ -25,7 +24,7 @@ func GetDiscovery(c *gin.Context) {
 				Options: map[string]OptionDO{
 					"wait": {
 						Type:    "TimeMs",
-						Default: "1",
+						Default: "10",
 					},
 					"color": {
 						Type:    "Color",
@@ -38,7 +37,7 @@ func GetDiscovery(c *gin.Context) {
 				Options: map[string]OptionDO{
 					"wait": {
 						Type:    "TimeMs",
-						Default: "1",
+						Default: "5",
 					},
 				},
 			},
@@ -47,7 +46,7 @@ func GetDiscovery(c *gin.Context) {
 				Options: map[string]OptionDO{
 					"wait": {
 						Type:    "TimeMs",
-						Default: "1",
+						Default: "30",
 					},
 					"color": {
 						Type:    "Color",
@@ -69,7 +68,9 @@ func GetDiscovery(c *gin.Context) {
 			},
 		},
 	}
-	fmt.Println(result)
+	c.Header("access-control-allow-credentials", "true")
+	c.Header("access-control-allow-methods", "*")
+	c.Header("Access-Control-Allow-Origin", "http://localhost:4200")
 	c.JSON(http.StatusOK, result)
 }
 

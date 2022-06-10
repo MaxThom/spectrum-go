@@ -8,7 +8,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jun  9 11:38:26 2022
+# Make data base, printed on Fri Jun 10 13:01:18 2022
 
 # Variables
 
@@ -55,7 +55,7 @@ CURDIR := /home/pi/spectrum-go
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
@@ -102,8 +102,9 @@ MAKEFILES :=
 MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
+ 
 # environment
-SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 54533 22
+SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 55798 22
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -133,7 +134,7 @@ _ = /home/pi/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/node
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-240c5bc7-04c6-4e3d-a76a-baa3b5530634.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-eae425ed-c40c-4f4b-ae18-a027bd6a3872.sock
 # environment
 GOMODCACHE = /home/pi/go/pkg/mod
 # environment
@@ -143,7 +144,7 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 HOME = /home/pi
 # environment
-XDG_SESSION_ID = 79
+XDG_SESSION_ID = 3
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # default
@@ -155,7 +156,7 @@ SUFFIXES :=
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 54533 fe80::306:3516:f274:9175%wlan0 22
+SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 55798 fe80::7ae7:2efa:a79b:c399%wlan0 22
 # variable set hash-table stats:
 # Load=72/1024=7%, Rehash=0, Collisions=2/102=2%
 
@@ -185,7 +186,7 @@ exec:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-05-24 22:22:44.989707446
+#  Last modified 2022-06-10 13:01:18.754587848
 #  File has been updated.
 #  Successfully updated.
 
@@ -202,6 +203,13 @@ clear:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+
+docker-exec:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 22):
+	docker run -it --rm spectrum:latest /bin/bash
 
 # Not a target:
 all:
@@ -226,25 +234,44 @@ build:
 #  recipe to execute (from 'Makefile', line 13):
 	go build -o ./bin/spectrum ./cmd/spectrum/
 
+docker-push:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+docker-build:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 16):
+	docker build --tag spectrum:latest -f build/Dockerfile .
+
+docker-run:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 19):
+	docker run --rm --privileged spectrum:latest
+
 .PHONY: run clear build
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=9/1024=1%, Rehash=0, Collisions=0/26=0%
+# Load=13/1024=1%, Rehash=0, Collisions=1/30=3%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 29 / storage = 207 B / avg = 7 B
-# current buf: size = 8174 B / used = 207 B / count = 29 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 33 / storage = 255 B / avg = 7 B
+# current buf: size = 8174 B / used = 255 B / count = 33 / avg = 7 B
 
-# strcache performance: lookups = 43 / hit rate = 32%
+# strcache performance: lookups = 51 / hit rate = 35%
 # hash-table stats:
-# Load=29/8192=0%, Rehash=0, Collisions=0/43=0%
-# Finished Make data base on Thu Jun  9 11:38:26 2022
+# Load=33/8192=0%, Rehash=0, Collisions=2/51=4%
+# Finished Make data base on Fri Jun 10 13:01:18 2022
 
  

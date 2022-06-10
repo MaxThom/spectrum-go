@@ -1,0 +1,10 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  spectrum-go:
+    image: maxthom/spectrum-go:latest
+    privileged: true
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./ledstrip.json:/app/configs/spectrum/ledstrip.json
+
