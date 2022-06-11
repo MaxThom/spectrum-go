@@ -8,6 +8,7 @@ import (
 	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 
 	"go.uber.org/zap"
 
@@ -49,7 +50,6 @@ func main() {
 			fmt.Fprintf(w, "not ready")
 		}
 	})
-
 	r.HandleFunc("/api/discovery", spectrum.GetDiscovery).Methods("GET")       // Discover all animations with options
 	r.HandleFunc("/api/animation", spectrum.GetAnimation).Methods("GET")       // Get list of all running animation
 	r.HandleFunc("/api/animation", spectrum.PostAnimation).Methods("POST")     // Start a new anination
@@ -61,6 +61,13 @@ func main() {
 	r.HandleFunc("/api/wifi", spectrum.GetWifi).Methods("GET")                 // Set wifi settings
 	r.HandleFunc("/api/wifi", spectrum.PostWifi).Methods("POST")               // Set wifi settings
 
+	c := cors.New(cors.Options{
+		AllowedOrigins:   []string{"*"},
+		AllowedMethods:   []string{"HEAD", "GET", "POST", "DELETE", "PUT", "OPTIONS"},
+		AllowCredentials: true,
+	})
+	handler := c.Handler(r)
+
 	// Get program args
 	args := os.Args[1:]
 	log.V(0).Info("Args", "args", args)
@@ -71,7 +78,7 @@ func main() {
 	// Mux
 	isReady = true
 	log.V(0).Info("Serving Mux on :8080", "mux", r)
-	log.Error(http.ListenAndServe(":8080", r), "Unexpected error in mux.")
+	log.Error(http.ListenAndServe(":8080", handler), "Unexpected error in mux.")
 	// Then blocking (waiting for quit signal):
 	//<-quit
 

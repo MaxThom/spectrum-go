@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.3
 # Built for arm-unknown-linux-gnueabihf
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Sat Jun 11 10:45:04 2022
+# Make data base, printed on Sun Jun 12 11:36:26 2022
 
 # Variables
 
@@ -101,7 +103,7 @@ MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
 # environment
-SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 60388 22
+SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 61450 22
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -131,7 +133,7 @@ _ = /home/pi/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/node
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-178fc44b-e271-482f-9d20-a01baaafe6b2.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-966ffbfa-8941-436c-8492-ba6128ba6ff9.sock
 # environment
 GOMODCACHE = /home/pi/go/pkg/mod
 # environment
@@ -153,7 +155,7 @@ SUFFIXES :=
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 60388 fe80::7ae7:2efa:a79b:c399%wlan0 22
+SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 61450 fe80::7ae7:2efa:a79b:c399%wlan0 22
 # variable set hash-table stats:
 # Load=72/1024=7%, Rehash=0, Collisions=2/102=2%
 
@@ -173,6 +175,16 @@ SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 60388 fe80::7ae7:2efa:a79b:c399
 
 # Files
 
+deploy:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 31):
+	docker-compose -f ./build/docker-compose/docker-compose.yaml down
+	docker-compose -f ./build/docker-compose/docker-compose.yaml rm -f
+	docker-compose -f ./build/docker-compose/docker-compose.yaml pull
+	docker-compose -f ./build/docker-compose/docker-compose.yaml up --build -d
+
 exec:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
@@ -183,9 +195,16 @@ exec:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-10 13:05:55.774829809
+#  Last modified 2022-06-11 17:37:18.059673077
 #  File has been updated.
 #  Successfully updated.
+
+docker-builx:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'Makefile', line 28):
+	docker buildx build --push --platform linux/arm/v7,linux/arm64 -t maxthom/spectrum-go:latest -f build/Dockerfile .
 
 clear:
 #  Phony target (prerequisite of .PHONY).
@@ -258,21 +277,19 @@ docker-run:
 #  File has not been updated.
 
 # files hash-table stats:
-# Load=13/1024=1%, Rehash=0, Collisions=1/30=3%
+# Load=15/1024=1%, Rehash=0, Collisions=1/32=3%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 33 / storage = 255 B / avg = 7 B
-# current buf: size = 8174 B / used = 255 B / count = 33 / avg = 7 B
+# strcache buffers: 1 (0) / strings = 35 / storage = 275 B / avg = 7 B
+# current buf: size = 8174 B / used = 275 B / count = 35 / avg = 7 B
 
-# strcache performance: lookups = 51 / hit rate = 35%
+# strcache performance: lookups = 55 / hit rate = 36%
 # hash-table stats:
-# Load=33/8192=0%, Rehash=0, Collisions=2/51=4%
-# Finished Make data base on Sat Jun 11 10:45:04 2022
+# Load=35/8192=0%, Rehash=0, Collisions=2/55=4%
+# Finished Make data base on Sun Jun 12 11:36:27 2022
 
  
-make: *** No rule to make target 'all'.  Stop.
-

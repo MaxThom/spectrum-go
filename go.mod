@@ -7,6 +7,7 @@ require (
 	github.com/go-logr/zapr v1.2.3
 	github.com/gorilla/mux v1.8.0
 	github.com/rpi-ws281x/rpi-ws281x-go v1.0.8
+	github.com/rs/cors v1.8.2
 	go.uber.org/zap v1.21.0
 )
 
