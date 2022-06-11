@@ -1,14 +1,16 @@
 package spectrum
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/maxthom/spectrum-go/pkg/led"
+	"github.com/maxthom/spectrum-go/pkg/utils"
 )
 
-func GetDiscovery(c *gin.Context) {
+func GetDiscovery(w http.ResponseWriter, r *http.Request) {
 	result := struct {
 		Options    *led.LedstripOptions `json:"options"`
 		Animations []DiscoveryDO        `json:"animations"`
@@ -68,81 +70,118 @@ func GetDiscovery(c *gin.Context) {
 			},
 		},
 	}
-	c.Header("access-control-allow-credentials", "true")
-	c.Header("access-control-allow-methods", "*")
-	c.Header("Access-Control-Allow-Origin", "http://localhost:4200")
-	c.JSON(http.StatusOK, result)
+
+	resultJson(w, http.StatusOK, result)
+	log.V(0).Info(utils.ColoredText(utils.Green, "MuxRequest GET"), "handler", "GetDiscovery", "httpStatus", http.StatusOK)
 }
 
-func GetAnimation(c *gin.Context) {
-	c.JSON(http.StatusOK, animations)
+func GetAnimation(w http.ResponseWriter, r *http.Request) {
+	resultJson(w, http.StatusOK, animations)
+	log.V(0).Info(utils.ColoredText(utils.Green, "MuxRequest GET"), "handler", "GetAnimation", "httpStatus", http.StatusOK)
 }
 
-func PostAnimation(c *gin.Context) {
-	var anim AnimUnitDO
-	if err := c.ShouldBindJSON(&anim); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+func PostAnimation(w http.ResponseWriter, r *http.Request) {
+	anim, err := getBody[AnimUnitDO](w, r)
+	if err != nil {
+		log.Error(err, utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostAnimation", "httpStatus", http.StatusBadRequest)
 		return
 	}
 
 	if anim.Segment.Start > options.LedCount || anim.Segment.End > options.LedCount {
-		c.JSON(http.StatusOK, gin.H{"message": "Segment start or end is higher then led count.", "segment": anim.Segment, "ledCount": options.LedCount})
+		resultJson(w, http.StatusOK, map[string]any{"message": "Segment start or end is higher then led count.", "segment": anim.Segment, "ledCount": options.LedCount})
+		log.V(0).Info(utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostAnimation", "httpStatus", http.StatusOK, "body", anim)
 		return
 	}
 
 	if anim.Segment.Start >= anim.Segment.End {
-		c.JSON(http.StatusOK, gin.H{"message": "Segment start is higer or equal to segment end.", "segment": anim.Segment, "ledCount": options.LedCount})
+		resultJson(w, http.StatusOK, map[string]any{"message": "Segment start is higer or equal to segment end.", "segment": anim.Segment, "ledCount": options.LedCount})
+		log.V(0).Info(utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostAnimation", "httpStatus", http.StatusOK, "body", anim)
 		return
 	}
 
-	SetAnimation(anim)
-	c.JSON(http.StatusOK, anim)
+	SetAnimation(*anim)
+	resultJson(w, http.StatusOK, anim)
+	log.V(0).Info(utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostAnimation", "httpStatus", http.StatusOK, "body", anim)
 }
 
-func DeleteAnimation(c *gin.Context) {
-	var anim AnimStopDO
-	if err := c.ShouldBindJSON(&anim); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	StopAnimation(anim)
-	c.JSON(http.StatusOK, anim)
-}
-
-func GetSettings(c *gin.Context) {
-	c.JSON(http.StatusOK, options)
-}
-
-func PostSettings(c *gin.Context) {
-	if err := c.ShouldBindJSON(&options); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+func DeleteAnimation(w http.ResponseWriter, r *http.Request) {
+	anim, err := getBody[AnimStopDO](w, r)
+	if err != nil {
+		log.Error(err, utils.ColoredText(utils.Yellow, "MuxRequest DELETE"), "handler", "DeleteAnimation", "httpStatus", http.StatusBadRequest)
 		return
 	}
 
+	StopAnimation(*anim)
+
+	resultJson(w, http.StatusOK, anim)
+	log.V(0).Info(utils.ColoredText(utils.Yellow, "MuxRequest DELETE"), "handler", "DeleteAnimation", "httpStatus", http.StatusOK, "body", anim)
+}
+
+func GetSettings(w http.ResponseWriter, r *http.Request) {
+	resultJson(w, http.StatusOK, options)
+	log.V(0).Info(utils.ColoredText(utils.Green, "MuxRequest GET"), "handler", "GetSettings", "httpStatus", http.StatusOK)
+}
+
+func PostSettings(w http.ResponseWriter, r *http.Request) {
+	do, err := getBody[led.LedstripOptions](w, r)
+	if err != nil {
+		log.Error(err, utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostSettings", "httpStatus", http.StatusBadRequest)
+		return
+	}
+
+	options = do
 	options.WriteToFile(pathToConfig)
-	c.JSON(http.StatusOK, options)
-	// Restart to load new config
+
+	resultJson(w, http.StatusOK, options)
+	log.V(0).Info(utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostSettings", "httpStatus", http.StatusOK, "body", do)
 	os.Exit(0)
 }
 
-func GetBrightness(c *gin.Context) {
-	c.JSON(http.StatusOK, options.Brightness)
+func GetBrightness(w http.ResponseWriter, r *http.Request) {
+	resultJson(w, http.StatusOK, map[string]any{"brightness": options.Brightness})
+	log.V(0).Info(utils.ColoredText(utils.Green, "MuxRequest GET"), "handler", "GetBrightness", "httpStatus", http.StatusOK)
 }
 
-func PostBrightness(c *gin.Context) {
-	var do BrightnessDO
-	if err := c.ShouldBindJSON(&do); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+func PostBrightness(w http.ResponseWriter, r *http.Request) {
+	do, err := getBody[BrightnessDO](w, r)
+	if err != nil {
+		log.Error(err, utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostBrightness", "httpStatus", http.StatusBadRequest)
 		return
 	}
+
 	strip.SetBrightness(0, do.Brightness)
-	c.JSON(http.StatusOK, do)
+
+	resultJson(w, http.StatusOK, do)
+	log.V(0).Info(utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostBrightness", "httpStatus", http.StatusOK, "body", do)
 }
 
-func GetWifi(c *gin.Context) {
+func GetWifi(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func PostWifi(c *gin.Context) {
+func PostWifi(w http.ResponseWriter, r *http.Request) {
 
+}
+
+func getBody[T any](w http.ResponseWriter, r *http.Request) (*T, error) {
+	reqBody, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return nil, err
+	}
+
+	var do T
+	if err := json.Unmarshal(reqBody, &do); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+		return nil, err
+	}
+
+	return &do, nil
+}
+
+func resultJson(w http.ResponseWriter, statusCode int, r any) {
+	w.WriteHeader(statusCode)
+	json.NewEncoder(w).Encode(r)
 }

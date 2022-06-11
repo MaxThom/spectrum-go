@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/go-logr/logr"
 	"github.com/go-logr/zapr"
+	"github.com/gorilla/mux"
 
 	"go.uber.org/zap"
 
@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	log  logr.Logger
-	quit = make(chan struct{})
+	log logr.Logger
+	//quit = make(chan struct{})
 )
 
 const ()
@@ -32,31 +32,34 @@ func main() {
 	log = zapr.NewLogger(zapLogger).WithName("spectrum")
 
 	// Setup api
-	r := gin.Default()
-	r.Use(CORSMiddleware())
+	r := mux.NewRouter().StrictSlash(true)
+
 	isReady := false
-	health := r.Group("")
-	{
-		health.GET("/alive", func(c *gin.Context) {
-			c.String(http.StatusOK, "alive")
-		})
-		health.GET("/ready", func(c *gin.Context) {
-			c.String(http.StatusOK, "%v", isReady)
-		})
-	}
-	v1 := r.Group("/api")
-	{
-		v1.GET("/discovery", spectrum.GetDiscovery)       // Discover all animations with options
-		v1.GET("/animation", spectrum.GetAnimation)       // Get list of all running animation
-		v1.POST("/animation", spectrum.PostAnimation)     // Start a new anination
-		v1.DELETE("/animation", spectrum.DeleteAnimation) // Stop an animation
-		v1.GET("/settings", spectrum.GetSettings)         // Get all settings
-		v1.POST("/settings", spectrum.PostSettings)       // Set all settings
-		v1.GET("/brightness", spectrum.GetBrightness)     // Get brightness
-		v1.POST("/brightness", spectrum.PostBrightness)   // Set brightness
-		v1.GET("/wifi", spectrum.GetWifi)                 // Set wifi settings
-		v1.POST("/wifi", spectrum.PostWifi)               // Set wifi settings
-	}
+
+	r.HandleFunc("/alive", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "alive")
+	})
+	r.HandleFunc("/ready", func(w http.ResponseWriter, r *http.Request) {
+		if isReady {
+			w.WriteHeader(http.StatusOK)
+			fmt.Fprintf(w, "ready")
+		} else {
+			w.WriteHeader(http.StatusServiceUnavailable)
+			fmt.Fprintf(w, "not ready")
+		}
+	})
+
+	r.HandleFunc("/api/discovery", spectrum.GetDiscovery).Methods("GET")       // Discover all animations with options
+	r.HandleFunc("/api/animation", spectrum.GetAnimation).Methods("GET")       // Get list of all running animation
+	r.HandleFunc("/api/animation", spectrum.PostAnimation).Methods("POST")     // Start a new anination
+	r.HandleFunc("/api/animation", spectrum.DeleteAnimation).Methods("DELETE") // Stop an animation
+	r.HandleFunc("/api/settings", spectrum.GetSettings).Methods("GET")         // Get all settings
+	r.HandleFunc("/api/settings", spectrum.PostSettings).Methods("POST")       // Set all settings
+	r.HandleFunc("/api/brightness", spectrum.GetBrightness).Methods("GET")     // Get brightness
+	r.HandleFunc("/api/brightness", spectrum.PostBrightness).Methods("POST")   // Set brightness
+	r.HandleFunc("/api/wifi", spectrum.GetWifi).Methods("GET")                 // Set wifi settings
+	r.HandleFunc("/api/wifi", spectrum.PostWifi).Methods("POST")               // Set wifi settings
 
 	// Get program args
 	args := os.Args[1:]
@@ -65,9 +68,10 @@ func main() {
 	// Spectrum
 	spectrum.Run(log, args)
 
-	// Gin
+	// Mux
 	isReady = true
-	r.Run(":8080")
+	log.V(0).Info("Serving Mux on :8080", "mux", r)
+	log.Error(http.ListenAndServe(":8080", r), "Unexpected error in mux.")
 	// Then blocking (waiting for quit signal):
 	//<-quit
 
@@ -88,24 +92,4 @@ func printWelcomeMessage() {
 		|_|                                             
 -------------------------------------------------------- 
 		`)
-}
-
-func CORSMiddleware() gin.HandlerFunc {
-	return func(c *gin.Context) {
-
-		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Headers", "*")
-
-		//c.Header("Access-Control-Allow-Origin", "*")
-		//c.Header("Access-Control-Allow-Credentials", "true")
-		//c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		//c.Header("Access-Control-Allow-Methods", "POST,HEAD,PATCH, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(200)
-			return
-		}
-
-		c.Next()
-	}
 }

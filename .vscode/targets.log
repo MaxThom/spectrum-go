@@ -1,6 +1,4 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
-make: *** No rule to make target 'all'.  Stop.
-
 # GNU Make 4.3
 # Built for arm-unknown-linux-gnueabihf
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -8,7 +6,7 @@ make: *** No rule to make target 'all'.  Stop.
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Fri Jun 10 13:01:18 2022
+# Make data base, printed on Sat Jun 11 10:45:04 2022
 
 # Variables
 
@@ -55,7 +53,7 @@ CURDIR := /home/pi/spectrum-go
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
@@ -95,16 +93,15 @@ MAKELEVEL := 0
 # default
 MAKE = $(MAKE_COMMAND)
 # environment
-PATH = /home/pi/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games:/usr/local/go/bin
+PATH = /home/pi/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games:/usr/local/go/bin
 # default
 MAKEFILES := 
 # environment
 MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
- 
 # environment
-SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 55798 22
+SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 60388 22
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -116,7 +113,7 @@ LS_COLORS =
 # 'override' directive
 GNUMAKEFLAGS := 
 # environment
-BROWSER = /home/pi/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/bin/helpers/browser.sh
+BROWSER = /home/pi/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/helpers/browser.sh
 # environment
 LOGNAME = pi
 # makefile
@@ -130,11 +127,11 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 VSCODE_AGENT_FOLDER = /home/pi/.vscode-server
 # environment
-_ = /home/pi/.vscode-server/bin/c3511e6c69bb39013c4a4b7b9566ec1ca73fc4d5/node
+_ = /home/pi/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/node
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-eae425ed-c40c-4f4b-ae18-a027bd6a3872.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-178fc44b-e271-482f-9d20-a01baaafe6b2.sock
 # environment
 GOMODCACHE = /home/pi/go/pkg/mod
 # environment
@@ -144,7 +141,7 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 HOME = /home/pi
 # environment
-XDG_SESSION_ID = 3
+XDG_SESSION_ID = 4
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # default
@@ -156,7 +153,7 @@ SUFFIXES :=
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 55798 fe80::7ae7:2efa:a79b:c399%wlan0 22
+SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 60388 fe80::7ae7:2efa:a79b:c399%wlan0 22
 # variable set hash-table stats:
 # Load=72/1024=7%, Rehash=0, Collisions=2/102=2%
 
@@ -186,7 +183,7 @@ exec:
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2022-06-10 13:01:18.754587848
+#  Last modified 2022-06-10 13:05:55.774829809
 #  File has been updated.
 #  Successfully updated.
 
@@ -209,7 +206,7 @@ docker-exec:
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 22):
-	docker run -it --rm spectrum:latest /bin/bash
+	docker run -it --rm --privileged maxthom/spectrum-go:latest /bin/bash
 
 # Not a target:
 all:
@@ -238,20 +235,22 @@ docker-push:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+#  recipe to execute (from 'Makefile', line 25):
+	docker push maxthom/spectrum-go:latest
 
 docker-build:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 16):
-	docker build --tag spectrum:latest -f build/Dockerfile .
+	docker build --tag maxthom/spectrum-go:latest -f build/Dockerfile .
 
 docker-run:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
 #  recipe to execute (from 'Makefile', line 19):
-	docker run --rm --privileged spectrum:latest
+	docker run --rm --privileged maxthom/spectrum-go:latest
 
 .PHONY: run clear build
 #  Implicit rule search has not been done.
@@ -272,6 +271,8 @@ docker-run:
 # strcache performance: lookups = 51 / hit rate = 35%
 # hash-table stats:
 # Load=33/8192=0%, Rehash=0, Collisions=2/51=4%
-# Finished Make data base on Fri Jun 10 13:01:18 2022
+# Finished Make data base on Sat Jun 11 10:45:04 2022
 
  
+make: *** No rule to make target 'all'.  Stop.
+
