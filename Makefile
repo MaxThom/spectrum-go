@@ -32,3 +32,4 @@ deploy:
 	docker-compose -f ./build/docker-compose/docker-compose.yaml rm -f
 	docker-compose -f ./build/docker-compose/docker-compose.yaml pull
 	docker-compose -f ./build/docker-compose/docker-compose.yaml up --build -d
+	docker-compose -f ./build/docker-compose/docker-compose.yaml logs -f

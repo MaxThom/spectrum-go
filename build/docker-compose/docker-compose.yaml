@@ -2,6 +2,7 @@ version: "3.9"  # optional since v1.27.0
 services:
   spectrum-go:
     image: maxthom/spectrum-go:latest
+    container_name: spectrum-go
     privileged: true
     restart: unless-stopped
     ports:
@@ -10,10 +11,17 @@ services:
       - ./ledstrip.json:/app/configs/spectrum/ledstrip.json
   spectrum-ui:
     image: maxthom/spectrum-ui:latest
+    container_name: spectrum-ui
     restart: unless-stopped
     ports:
       - "80:80"
     depends_on:
       - "spectrum-go"
+  watchtower:
+    image: containrrr/watchtower
+    container_name: watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --interval 30 spectrum-go spectrum-ui
 
 
