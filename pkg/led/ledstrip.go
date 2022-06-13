@@ -23,8 +23,8 @@ type LedstripControl interface {
 }
 
 type StripSegment struct {
-	Start int // Include
-	End   int // Exclude
+	Start int `json:"start"` // Include
+	End   int `json:"end"`   // Exclude
 	len   int // End - Start
 }
 
