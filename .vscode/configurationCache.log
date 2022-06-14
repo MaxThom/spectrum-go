@@ -1,1 +1,1 @@
-{"buildTargets":["build","clear","deploy","docker-build","docker-builx","docker-exec","docker-push","docker-run","exec","run"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
+{"buildTargets":["build","clear","deploy","docker-build","docker-buildx","docker-exec","docker-push","docker-run","exec","run"],"launchTargets":[],"customConfigurationProvider":{"workspaceBrowse":{"browsePath":[],"compilerArgs":[]},"fileIndex":[]}}
