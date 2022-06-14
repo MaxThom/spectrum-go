@@ -25,7 +25,7 @@ docker-push:
 	docker push maxthom/spectrum-go:latest
 
 docker-buildx:
-	docker buildx build --push --platform linux/arm/v6,linux/arm/v7,linux/arm64 -t maxthom/spectrum-go:latest -f build/Dockerfile .
+	docker buildx build --push --platform linux/arm/v6,linux/arm/v7 -t maxthom/spectrum-go:latest -f build/Dockerfile .
 
 deploy:
 	docker-compose -f ./build/docker-compose/docker-compose.yaml down
