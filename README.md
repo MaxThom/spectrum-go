@@ -6,6 +6,15 @@ https://github.com/rpi-ws281x/rpi-ws281x-go
 
 [LED Colors](https://www.springtree.net/audio-visual-blog/rgb-led-color-mixing/)
 
+## Deployment on prod devices
+```
+curl https://codeload.github.com/maxthom/spectrum-go/tar.gz/main | tar -xz --strip=2 spectrum-go-main/build/docker-compose
+rn ledstrip_default.json ledstrip.json
+chmod +x docker_installer.sh
+./docker_installer.sh
+docker-compose up
+```
+
 ## File structure
 
 ```

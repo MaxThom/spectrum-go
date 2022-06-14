@@ -1,0 +1,8 @@
+{
+ "brightness": 128,
+ "ledCount": 144,
+ "gpioPin": 18,
+ "frequency": 1200000,
+ "dmaNum": 10,
+ "stripType": "SK6812StripGRBW"
+}

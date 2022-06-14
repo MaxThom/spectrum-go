@@ -124,8 +124,8 @@ func SetAnimation(anim AnimUnitDO) {
 	}
 
 	if len(animations) > anim.Index {
-		animations[anim.Index] = play
 		animations[anim.Index].StopAnimation()
+		animations[anim.Index] = play		
 	} else {
 		animations = append(animations, play)
 		anim.Index = len(animations) - 1
