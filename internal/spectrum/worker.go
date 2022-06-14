@@ -124,6 +124,7 @@ func SetAnimation(anim AnimUnitDO) {
 	}
 
 	if len(animations) > anim.Index {
+		animations[anim.Index].ShouldClear = true
 		animations[anim.Index].StopAnimation()
 		animations[anim.Index] = play		
 	} else {
