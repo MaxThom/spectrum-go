@@ -125,8 +125,17 @@ func SetAnimation(anim AnimUnitDO) {
 
 	if len(animations) > anim.Index {
 		animations[anim.Index].StopAnimation()
-		animations[anim.Index] = play		
+		animations[anim.Index] = play
 	} else {
+		nbMissing := anim.Index - len(animations)
+		for i := 0; i < nbMissing; i++ {
+			animations = append(animations, &led.AnimUnit{
+				Segment:   led.NewStripSegment(0, 0),
+				Animer:    anim1d,
+				Animation: "",
+				Options:   map[string]string{},
+			})
+		}
 		animations = append(animations, play)
 		anim.Index = len(animations) - 1
 	}

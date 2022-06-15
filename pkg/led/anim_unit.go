@@ -12,9 +12,11 @@ type AnimUnit struct {
 }
 
 func (s *AnimUnit) StartAnimation() {
-	s.cancelToken = make(chan struct{})
-	s.IsRunning = true
-	utils.InvokeAsync(s.Animer, s.Animation, s.cancelToken, s.Segment, s.Options)
+	if s.Animation != "" {
+		s.cancelToken = make(chan struct{})
+		s.IsRunning = true
+		utils.InvokeAsync(s.Animer, s.Animation, s.cancelToken, s.Segment, s.Options)
+	}
 }
 
 func (s *AnimUnit) StopAnimation() {
