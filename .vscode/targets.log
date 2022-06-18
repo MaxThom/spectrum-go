@@ -1,4 +1,6 @@
 make all --print-data-base --no-builtin-variables --no-builtin-rules --question
+make: *** No rule to make target 'all'.  Stop.
+
 # GNU Make 4.3
 # Built for arm-unknown-linux-gnueabihf
 # Copyright (C) 1988-2020 Free Software Foundation, Inc.
@@ -6,7 +8,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Thu Jun 16 09:33:32 2022
+# Make data base, printed on Sat Jun 18 12:34:45 2022
 
 # Variables
 
@@ -34,6 +36,8 @@ VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 PWD = /home/pi/spectrum-go
 # automatic
 %D = $(patsubst %/,%,$(dir $%))
+# environment
+OLDPWD = /home/pi/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630
 # automatic
 ^D = $(patsubst %/,%,$(dir $^))
 # environment
@@ -93,7 +97,7 @@ MAKELEVEL := 0
 # default
 MAKE = $(MAKE_COMMAND)
 # environment
-PATH = /home/pi/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games:/usr/local/go/bin
+PATH = /home/pi/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/remote-cli:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games:/usr/local/go/bin
 # default
 MAKEFILES := 
 # environment
@@ -101,7 +105,7 @@ MOTD_SHOWN = pam
 # automatic
 ^F = $(notdir $^)
 # environment
-SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 60148 22
+SSH_CLIENT = fe80::94ea:4fea:a009:7d61%wlan0 64475 22
 # environment
 VSCODE_LOG_NATIVE = false
 # automatic
@@ -113,7 +117,7 @@ LS_COLORS =
 # 'override' directive
 GNUMAKEFLAGS := 
 # environment
-BROWSER = /home/pi/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/bin/helpers/browser.sh
+BROWSER = /home/pi/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/bin/helpers/browser.sh
 # environment
 LOGNAME = pi
 # makefile
@@ -127,11 +131,11 @@ VSCODE_EXTHOST_WILL_SEND_SOCKET = true
 # environment
 VSCODE_AGENT_FOLDER = /home/pi/.vscode-server
 # environment
-_ = /home/pi/.vscode-server/bin/4af164ea3a06f701fe3e89a2bcbb421d2026b68f/node
+_ = /home/pi/.vscode-server/bin/30d9c6cd9483b2cc586687151bcbcd635f373630/node
 # environment
 XDG_RUNTIME_DIR = /run/user/1000
 # environment
-VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-d6836c72-045e-4fdf-afcd-9d7b11a4ea0d.sock
+VSCODE_IPC_HOOK_CLI = /run/user/1000/vscode-ipc-6ac3a50f-c089-4e9a-9906-0ad73c59468d.sock
 # environment
 GOMODCACHE = /home/pi/go/pkg/mod
 # environment
@@ -141,7 +145,7 @@ VSCODE_AMD_ENTRYPOINT = vs/workbench/api/node/extensionHostProcess
 # environment
 HOME = /home/pi
 # environment
-XDG_SESSION_ID = 3
+XDG_SESSION_ID = 7
 # environment
 GOPROXY = https://proxy.golang.org,direct
 # default
@@ -153,9 +157,9 @@ SUFFIXES :=
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell nocomment grouped-target extra-prereqs archives jobserver output-sync check-symlink load
 # environment
-SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 60148 fe80::7ae7:2efa:a79b:c399%wlan0 22
+SSH_CONNECTION = fe80::94ea:4fea:a009:7d61%wlan0 64475 fe80::7ae7:2efa:a79b:c399%wlan0 22
 # variable set hash-table stats:
-# Load=72/1024=7%, Rehash=0, Collisions=2/102=2%
+# Load=73/1024=7%, Rehash=0, Collisions=2/103=2%
 
 # Pattern-specific Variable Values
 
@@ -283,6 +287,7 @@ docker-run:
 #  File has not been updated.
 
 # files hash-table stats:
+ 
 # Load=16/1024=2%, Rehash=0, Collisions=1/33=3%
 # VPATH Search Paths
 
@@ -296,8 +301,6 @@ docker-run:
 # strcache performance: lookups = 57 / hit rate = 36%
 # hash-table stats:
 # Load=36/8192=0%, Rehash=0, Collisions=2/57=4%
-# Finished Make data base on Thu Jun 16 09:33:32 2022
+# Finished Make data base on Sat Jun 18 12:34:45 2022
 
  
-make: *** No rule to make target 'all'.  Stop.
-

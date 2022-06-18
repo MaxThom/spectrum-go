@@ -149,6 +149,13 @@ func PostBrightness(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if do.Brightness < 0 || do.Brightness > 255 {
+		resultJson(w, http.StatusOK, map[string]any{"message": "Brightness must be between 0 and 255."})
+		log.V(0).Info(utils.ColoredText(utils.Cyan, "MuxRequest POST"), "handler", "PostBrightness", "httpStatus", http.StatusOK, "body", do)
+		return
+	}
+
+	options.Brightness = do.Brightness
 	strip.SetBrightness(0, do.Brightness)
 
 	resultJson(w, http.StatusOK, do)
