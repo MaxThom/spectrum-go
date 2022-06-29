@@ -28,4 +28,6 @@ type DiscoveryDO struct {
 type OptionDO struct {
 	Type    string `json:"type"`
 	Default string `json:"default"`
+	Min     string `json:"min,omitempty"`
+	Max     string `json:"max,omitempty"`
 }

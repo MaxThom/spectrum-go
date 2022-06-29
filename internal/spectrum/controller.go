@@ -27,10 +27,16 @@ func GetDiscovery(w http.ResponseWriter, r *http.Request) {
 					"wait": {
 						Type:    "TimeMs",
 						Default: "10",
+						Min:     "0",
+						Max:     "100",
 					},
 					"color": {
 						Type:    "Color",
 						Default: "0xff000000",
+					},
+					"reverse": {
+						Type:    "Bool",
+						Default: "False",
 					},
 				},
 			},
@@ -40,6 +46,8 @@ func GetDiscovery(w http.ResponseWriter, r *http.Request) {
 					"wait": {
 						Type:    "TimeMs",
 						Default: "5",
+						Min:     "0",
+						Max:     "100",
 					},
 				},
 			},
@@ -49,6 +57,8 @@ func GetDiscovery(w http.ResponseWriter, r *http.Request) {
 					"wait": {
 						Type:    "TimeMs",
 						Default: "30",
+						Min:     "0",
+						Max:     "100",
 					},
 					"color": {
 						Type:    "Color",
@@ -61,10 +71,14 @@ func GetDiscovery(w http.ResponseWriter, r *http.Request) {
 					"count": {
 						Type:    "Int",
 						Default: "10",
+						Min:     "1",
+						Max:     "100",
 					},
 					"turn_chance": {
 						Type:    "Int",
 						Default: "2",
+						Min:     "0",
+						Max:     "100",
 					},
 				},
 			},

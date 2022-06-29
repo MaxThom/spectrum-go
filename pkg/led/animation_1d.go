@@ -23,13 +23,25 @@ func (s *Animation_1d) Clear(cancelToken chan struct{}, segment StripSegment, op
 func (s *Animation_1d) Wipe(cancelToken chan struct{}, segment StripSegment, options map[string]string) {
 	wait := getTimeMsOption(options, "wait", 1*time.Millisecond)
 	color := getColorOption(options, "color", uint32(0xff000000))
+	isReverse := getBoolOption(options, "reverse", false)
+
 	for {
 		s.Clear(cancelToken, segment, options)
-		for i := segment.Start; i < segment.End; i++ {
-			s.Strip.SetLed(0, i, color)
-			time.Sleep(5*time.Millisecond + wait)
-			if cancellationRequest(cancelToken) {
-				return
+		if isReverse {
+			for i := segment.End - 1; i >= segment.Start; i-- {
+				s.Strip.SetLed(0, i, color)
+				time.Sleep(5*time.Millisecond + wait)
+				if cancellationRequest(cancelToken) {
+					return
+				}
+			}
+		} else {
+			for i := segment.Start; i < segment.End; i++ {
+				s.Strip.SetLed(0, i, color)
+				time.Sleep(5*time.Millisecond + wait)
+				if cancellationRequest(cancelToken) {
+					return
+				}
 			}
 		}
 	}

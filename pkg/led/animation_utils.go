@@ -71,3 +71,12 @@ func getFloatOption(dict map[string]string, key string, def float32) float32 {
 	}
 	return def
 }
+
+func getBoolOption(dict map[string]string, key string, def bool) bool {
+	if strVal, ok := dict[key]; ok {
+		val, err := strconv.ParseBool(strVal)
+		utils.CheckError(err)
+		return bool(val)
+	}
+	return def
+}
